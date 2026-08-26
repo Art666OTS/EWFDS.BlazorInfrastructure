@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\EWFDS.BlazorInfrastructure.props" />
-</Project>
