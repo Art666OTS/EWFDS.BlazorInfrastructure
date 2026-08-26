@@ -1,4 +1,5 @@
 using EWFDSBL8BusinessLibrary;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace EWFDS.BlazorInfrastructure.Services.Identity
@@ -237,6 +238,42 @@ namespace EWFDS.BlazorInfrastructure.Services.Identity
         /// <param name="actID">The activity ID.</param>
         /// <returns>The populated ApplicationUserIdentity.</returns>
         IApplicationUserIdentity RePopulateAUI(int actID);
+
+        /// <summary>
+        /// Gets the identity and creates an activity record for login.
+        /// </summary>
+        /// <param name="un">Username.</param>
+        /// <param name="pwd">Password.</param>
+        /// <param name="context">HTTP context.</param>
+        /// <returns>The authenticated ApplicationUserIdentity.</returns>
+        IApplicationUserIdentity GetIdentityCreateActivity(string un, string pwd, HttpContext context);
+
+        /// <summary>
+        /// Reloads the ApplicationUserIdentity from an activity record.
+        /// </summary>
+        /// <param name="ai">Activity info.</param>
+        /// <param name="context">HTTP context.</param>
+        /// <param name="keyGuid">Login key GUID.</param>
+        /// <returns>The reloaded ApplicationUserIdentity.</returns>
+        IApplicationUserIdentity ReloadAUI(ACTIVITYInfo ai, HttpContext context, Guid keyGuid);
+
+        /// <summary>
+        /// Reloads the customer for the identity.
+        /// </summary>
+        /// <param name="aui">The identity to reload.</param>
+        /// <param name="cono">Company number.</param>
+        /// <param name="ip">IP address.</param>
+        /// <returns>True if successful.</returns>
+        bool ReloadCustomer(IApplicationUserIdentity aui, string cono, System.Net.IPAddress? ip);
+
+        /// <summary>
+        /// Checks the associated company for the user.
+        /// </summary>
+        /// <param name="au">The identity.</param>
+        /// <param name="GroupBy">Group by value.</param>
+        /// <param name="ip">IP address.</param>
+        /// <returns>Company check result.</returns>
+        string checkAssociatedCompany(IApplicationUserIdentity au, string GroupBy, System.Net.IPAddress? ip);
 
         /// <summary>
         /// Gets a claim value by type.

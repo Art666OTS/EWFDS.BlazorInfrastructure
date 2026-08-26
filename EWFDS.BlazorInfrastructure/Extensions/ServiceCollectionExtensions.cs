@@ -1,3 +1,5 @@
+using EWFDS.BlazorInfrastructure.Services.Authorization;
+using EWFDS.BlazorInfrastructure.Services.Identity;
 using EWFDS.BlazorInfrastructure.Services.State;
 using EWFDS.BlazorInfrastructure.Services.Theming;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +34,21 @@ namespace EWFDS.BlazorInfrastructure.Extensions
         }
 
         /// <summary>
+        /// Adds identity and authorization services to the service collection.
+        /// Requires IApplicationConfig to be registered first by the consuming application.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddIdentityServices(this IServiceCollection services)
+        {
+            services.AddScoped<ILoadApplicationUser, LoadApplicationUser>();
+            services.AddScoped<IApplicationUserIdentity, ApplicationUserIdentity>();
+            return services;
+        }
+
+        /// <summary>
         /// Adds all EWFDS BlazorInfrastructure services to the service collection.
+        /// Note: IApplicationConfig must be registered by the consuming application before calling this.
         /// Call this method to register all shared infrastructure services.
         /// </summary>
         /// <param name="services">The service collection.</param>
@@ -45,10 +61,8 @@ namespace EWFDS.BlazorInfrastructure.Extensions
             // Phase 2: User State
             services.AddUserStateService();
 
-            // Future phases will add:
-            // - Additional authorization services
-            // - Navigation services
-            // - Error handling services
+            // Phase 3: Identity & Authorization
+            services.AddIdentityServices();
 
             return services;
         }
