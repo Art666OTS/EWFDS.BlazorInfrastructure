@@ -1,0 +1,26 @@
+@using Telerik.Blazor.Components
+@inherits SelectComponentBase<EWFDSBL8BusinessLibrary.LevelInfo>
+
+@if (IsLoading)
+{
+    <span class="text-muted">Loading...</span>
+}
+else if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <span class="text-danger">@ErrorMessage</span>
+}
+else if (SelectedKey > 0)
+{
+    <span class="form-control-plaintext">@DisplayText</span>
+}
+else
+{
+    <TelerikDropDownList Data="@Options"
+                         Value="@SelectedValue"
+                         ValueChanged="@((string val) => OnValueChanged(val))"
+                         TextField="Text"
+                         ValueField="Value"
+                         DefaultText="@DefaultText"
+                         Width="100%">
+    </TelerikDropDownList>
+}

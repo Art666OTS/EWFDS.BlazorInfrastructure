@@ -1,0 +1,25 @@
+@using Telerik.Blazor.Components
+
+@if (isLoading)
+{
+    <span class="text-muted">Loading...</span>
+}
+else if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <span class="text-danger">@errorMessage</span>
+}
+else if (CatKey > 0)
+{
+    <span class="form-control-plaintext">@displayText</span>
+}
+else
+{
+    <TelerikDropDownList Data="@options"
+                         Value="@selectedValue"
+                         ValueChanged="@((string val) => OnValueChanged(val))"
+                         TextField="Text"
+                         ValueField="Value"
+                         DefaultText="Select Storage Cabinet"
+                         Width="100%">
+    </TelerikDropDownList>
+}

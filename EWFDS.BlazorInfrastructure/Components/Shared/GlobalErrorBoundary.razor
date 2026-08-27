@@ -1,0 +1,61 @@
+@using Microsoft.AspNetCore.Components.Web
+@using EWFDS.BlazorInfrastructure.Services.ErrorHandling
+@inherits ErrorBoundary
+@inject IGlobalErrorHandler ErrorHandler
+@inject NavigationManager Navigation
+
+@if (CurrentException is not null)
+{
+    <div class="alert alert-danger m-3" role="alert">
+        <h4 class="alert-heading">
+            <i class="bi bi-exclamation-triangle-fill"></i> An Error Occurred
+        </h4>
+        <p>An unexpected error has occurred. Our team has been notified.</p>
+
+        @if (IsDevelopment)
+        {
+            <hr />
+            <div class="mb-0">
+                <h5>Error Details (Development Only):</h5>
+                <p><strong>Type:</strong> @CurrentException.GetType().Name</p>
+                <p><strong>Message:</strong> @CurrentException.Message</p>
+                <pre class="bg-light p-2 rounded">@CurrentException.StackTrace</pre>
+            </div>
+        }
+
+        <hr />
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" @onclick="RecoverFromError">
+                Try Again
+            </button>
+            <button class="btn btn-secondary" @onclick="NavigateHome">
+                Go to Home
+            </button>
+        </div>
+    </div>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public bool IsDevelopment { get; set; }
+
+    protected override async Task OnErrorAsync(Exception exception)
+    {
+        await ErrorHandler.HandleErrorAsync(exception, "ErrorBoundary");
+        await base.OnErrorAsync(exception);
+    }
+
+    private void RecoverFromError()
+    {
+        Recover();
+    }
+
+    private void NavigateHome()
+    {
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
+}

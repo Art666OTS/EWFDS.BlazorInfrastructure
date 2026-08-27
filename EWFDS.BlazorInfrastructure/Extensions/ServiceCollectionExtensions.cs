@@ -1,4 +1,5 @@
 using EWFDS.BlazorInfrastructure.Services.Authorization;
+using EWFDS.BlazorInfrastructure.Services.ErrorHandling;
 using EWFDS.BlazorInfrastructure.Services.Identity;
 using EWFDS.BlazorInfrastructure.Services.State;
 using EWFDS.BlazorInfrastructure.Services.Theming;
@@ -43,6 +44,18 @@ namespace EWFDS.BlazorInfrastructure.Extensions
         {
             services.AddScoped<ILoadApplicationUser, LoadApplicationUser>();
             services.AddScoped<IApplicationUserIdentity, ApplicationUserIdentity>();
+            services.AddScoped<IdentityRedirectManager>();
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the error handling service to the service collection.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddErrorHandlingService(this IServiceCollection services)
+        {
+            services.AddScoped<IGlobalErrorHandler, GlobalErrorHandler>();
             return services;
         }
 
@@ -63,6 +76,9 @@ namespace EWFDS.BlazorInfrastructure.Extensions
 
             // Phase 3: Identity & Authorization
             services.AddIdentityServices();
+
+            // Phase 4: Error Handling
+            services.AddErrorHandlingService();
 
             return services;
         }

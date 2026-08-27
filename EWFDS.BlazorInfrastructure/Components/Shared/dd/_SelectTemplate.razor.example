@@ -1,0 +1,38 @@
+@* 
+	Standard template for dropdown components using SelectComponentBase<T>.
+	Copy this template and adjust:
+	1. The @inherits directive to your specific entity type
+	2. The namespace for your entity type
+
+	Example usage for a new dropdown:
+	@inherits SelectComponentBase<YourNamespace.YourEntityInfo>
+	Then copy the content below.
+*@
+
+@using Telerik.Blazor.Components
+@* Add your entity namespace here, e.g.: *@
+@* @inherits SelectComponentBase<EWFDSBL8BusinessLibrary.CompanyInfo> *@
+
+@if (IsLoading)
+{
+	<span class="text-muted">Loading...</span>
+}
+else if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+	<span class="text-danger">@ErrorMessage</span>
+}
+else if (SelectedKey > 0)
+{
+	<span class="form-control-plaintext">@DisplayText</span>
+}
+else
+{
+	<TelerikDropDownList Data="@Options"
+						 Value="@SelectedValue"
+						 ValueChanged="@((string val) => OnValueChanged(val))"
+						 TextField="Text"
+						 ValueField="Value"
+						 DefaultText="@DefaultText"
+						 Width="100%">
+	</TelerikDropDownList>
+}

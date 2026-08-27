@@ -1,6 +1,6 @@
 using EWFDS.BlazorInfrastructure.Services.Identity;
 using EWFDS.BlazorInfrastructure.Services.State;
-using EWFDSBL8.Library.PickPack.Services;
+using EWFDSBL8.Library.Shared.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;

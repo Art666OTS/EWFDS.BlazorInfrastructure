@@ -1,0 +1,25 @@
+@using EWFDS.BlazorInfrastructure.Components.Shared.dd
+
+@if (isLoading)
+{
+    <span class="text-muted"><em>Loading...</em></span>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <span class="text-danger">@errorMessage</span>
+}
+else if (LID > 0)
+{
+    <span class="form-control-plaintext">@locationCode</span>
+}
+else
+{
+    <TelerikDropDownList Data="@locationOptions"
+                         Value="@selectedValue"
+                         ValueChanged="@((string val) => OnValueChanged(val))"
+                         TextField="Text"
+                         ValueField="Value"
+                         DefaultText="Select Location"
+                         Width="100%">
+    </TelerikDropDownList>
+}

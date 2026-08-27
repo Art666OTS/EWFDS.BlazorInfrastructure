@@ -1,0 +1,226 @@
+@using EWFDS.BlazorInfrastructure.Components.Shared.Models
+@using Ganss.Xss
+@using Microsoft.AspNetCore.Http
+@implements IDisposable
+
+@if (!string.IsNullOrEmpty(DisplayMessage))
+{
+    var alertType = DetermineAlertType();
+    var displayClass = $"alert alert-{alertType} {(Dismissible ? "alert-dismissible fade show" : "")}";
+
+    <div class="@displayClass" role="alert" aria-live="polite" aria-atomic="true">
+        @((MarkupString)SanitizeHtml(DisplayMessage))
+        @if (Dismissible)
+        {
+            <button type="button" class="btn-close" @onclick="Dismiss" aria-label="Close"></button>
+        }
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Cookie name used to pass status messages between pages.
+    /// </summary>
+    public const string StatusCookieName = "Identity.StatusMessage";
+
+    private string? messageFromCookie;
+    private Timer? autoHideTimer;
+    private bool isVisible = true;
+    private bool isDisposed;
+
+    // Sanitizer configured to allow only safe formatting tags
+    private static readonly HtmlSanitizer _sanitizer = CreateSanitizer();
+
+    private static HtmlSanitizer CreateSanitizer()
+    {
+        var sanitizer = new HtmlSanitizer();
+        // Clear all defaults and only allow safe formatting tags
+        sanitizer.AllowedTags.Clear();
+        sanitizer.AllowedTags.Add("br");
+        sanitizer.AllowedTags.Add("strong");
+        sanitizer.AllowedTags.Add("b");
+        sanitizer.AllowedTags.Add("em");
+        sanitizer.AllowedTags.Add("i");
+        sanitizer.AllowedTags.Add("u");
+        sanitizer.AllowedTags.Add("p");
+        sanitizer.AllowedTags.Add("span");
+        sanitizer.AllowedTags.Add("ul");
+        sanitizer.AllowedTags.Add("ol");
+        sanitizer.AllowedTags.Add("li");
+        sanitizer.AllowedTags.Add("a");  // Allow anchor/link tags
+
+        // Only allow safe attributes for links
+        sanitizer.AllowedAttributes.Clear();
+        sanitizer.AllowedAttributes.Add("href");   // Link destination
+        sanitizer.AllowedAttributes.Add("target"); // Allow target="_blank"
+        sanitizer.AllowedAttributes.Add("rel");    // Allow rel="noopener noreferrer"
+
+        // Only allow safe URL schemes (blocks javascript:, data:, etc.)
+        sanitizer.AllowedSchemes.Clear();
+        sanitizer.AllowedSchemes.Add("http");
+        sanitizer.AllowedSchemes.Add("https");
+        sanitizer.AllowedSchemes.Add("mailto");
+
+        return sanitizer;
+    }
+
+    private static string SanitizeHtml(string? html)
+    {
+        if (string.IsNullOrEmpty(html))
+            return string.Empty;
+
+        return _sanitizer.Sanitize(html);
+    }
+
+    /// <summary>
+    /// The message text to display.
+    /// </summary>
+    [Parameter]
+    public string? Message { get; set; }
+
+    /// <summary>
+    /// The type of alert to display (Success, Error, Warning, Info).
+    /// If not specified, the component will attempt to infer from the message text.
+    /// </summary>
+    [Parameter]
+    public AlertType? Type { get; set; }
+
+    /// <summary>
+    /// Legacy parameter for specifying alert type as string (e.g., "danger", "success").
+    /// Use Type parameter instead for better type safety.
+    /// </summary>
+    [Parameter]
+    public string? MessageClass { get; set; }
+
+    /// <summary>
+    /// Whether the alert can be dismissed by the user.
+    /// </summary>
+    [Parameter]
+    public bool Dismissible { get; set; } = true;
+
+    /// <summary>
+    /// Delay in milliseconds before auto-hiding the message. 
+    /// Set to 0 to disable auto-hide. Default is 0.
+    /// </summary>
+    [Parameter]
+    public int AutoHideDelayMs { get; set; } = 0;
+
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? previousMessage;
+
+    private string? DisplayMessage => isVisible ? (Message ?? messageFromCookie) : null;
+
+    protected override void OnParametersSet()
+    {
+        // Reset visibility when a new message is received
+        if (Message != previousMessage)
+        {
+            previousMessage = Message;
+            if (!string.IsNullOrEmpty(Message))
+            {
+                isVisible = true;
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Read and delete cookie after first render when HttpContext is guaranteed to be available
+            if (HttpContext is not null)
+            {
+                messageFromCookie = HttpContext.Request.Cookies[StatusCookieName];
+
+                if (messageFromCookie is not null && HttpContext.Response?.HasStarted == false)
+                {
+                    HttpContext.Response.Cookies.Delete(StatusCookieName);
+                }
+
+                // Set up auto-hide timer if configured
+                if (AutoHideDelayMs > 0 && !string.IsNullOrEmpty(DisplayMessage))
+                {
+                    autoHideTimer = new Timer(_ =>
+                    {
+                        try
+                        {
+                            InvokeAsync(() =>
+                            {
+                                if (!isDisposed)
+                                {
+                                    Dismiss();
+                                }
+                            });
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // Component was disposed, ignore
+                        }
+                    }, null, AutoHideDelayMs, Timeout.Infinite);
+                }
+
+                StateHasChanged();
+            }
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private string DetermineAlertType()
+    {
+        // Priority 1: Explicit Type parameter
+        if (Type.HasValue)
+        {
+            return Type.Value switch
+            {
+                AlertType.Success => "success",
+                AlertType.Error => "danger",
+                AlertType.Warning => "warning",
+                AlertType.Info => "info",
+                _ => "info"
+            };
+        }
+
+        // Priority 2: Legacy MessageClass parameter
+        if (!string.IsNullOrEmpty(MessageClass))
+        {
+            return MessageClass;
+        }
+
+        // Priority 3: Infer from message text (fallback for backward compatibility)
+        var message = DisplayMessage ?? string.Empty;
+
+        if (message.StartsWith("Error", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("failed", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("exception", StringComparison.OrdinalIgnoreCase))
+            return "danger";
+
+        if (message.StartsWith("Warning", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("warning", StringComparison.OrdinalIgnoreCase))
+            return "warning";
+
+        if (message.StartsWith("Info", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("information", StringComparison.OrdinalIgnoreCase))
+            return "info";
+
+        // Default to success for positive messages
+        return "success";
+    }
+
+    private void Dismiss()
+    {
+        isVisible = false;
+        autoHideTimer?.Dispose();
+        autoHideTimer = null;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        isDisposed = true;
+        autoHideTimer?.Dispose();
+        autoHideTimer = null;
+    }
+}
