@@ -20,10 +20,7 @@ public class AzureBlobStorageService : IFileApiStorageService
     private readonly BlobServiceClient _blobServiceClient;
     private readonly string _containerName;
 
-    public AzureBlobStorageService(
-        IOptions<AzureBlobStorageSettings> settings,
-        IHostEnvironment environment,
-        ILogger<AzureBlobStorageService> logger)
+    public AzureBlobStorageService(IOptions<AzureBlobStorageSettings> settings, IHostEnvironment environment, ILogger<AzureBlobStorageService> logger)
     {
         _settings = settings.Value;
         _environment = environment;
@@ -35,20 +32,18 @@ public class AzureBlobStorageService : IFileApiStorageService
         // Create BlobServiceClient using Managed Identity or Connection String
         _blobServiceClient = CreateBlobServiceClient();
 
-        _logger.LogInformation(
-            "AzureBlobStorageService initialized for environment {Environment} with container {Container}",
-            _environment.EnvironmentName,
-            _containerName);
+        _logger.LogInformation("AzureBlobStorageService initialized for environment {Environment} with container {Container}",
+            _environment.EnvironmentName, _containerName);
     }
 
     private string GetContainerName()
     {
-        return _environment.EnvironmentName switch
+        return _environment.EnvironmentName.ToLowerInvariant() switch
         {
-            "Development" => _settings.Containers.Development,
-            "Staging" => _settings.Containers.Staging,
-            "Production" => _settings.Containers.Production,
-            _ => _settings.Containers.Production // Default to production for unknown environments
+            "development" => _settings.Containers.Development,
+            "staging" => _settings.Containers.Staging,
+            "production" => _settings.Containers.Production,
+            _ => _settings.Containers.Development // Default to development for unknown environments
         };
     }
 
@@ -64,8 +59,7 @@ public class AzureBlobStorageService : IFileApiStorageService
         // Use Managed Identity (DefaultAzureCredential handles multiple auth methods)
         if (string.IsNullOrWhiteSpace(_settings.AccountName))
         {
-            throw new InvalidOperationException(
-                "AzureBlobStorage:AccountName must be configured when using Managed Identity.");
+            throw new InvalidOperationException("AzureBlobStorage:AccountName must be configured when using Managed Identity.");
         }
 
         var blobUri = new Uri($"https://{_settings.AccountName}.blob.core.windows.net");
@@ -80,9 +74,7 @@ public class AzureBlobStorageService : IFileApiStorageService
             ExcludeInteractiveBrowserCredential = true // Don't prompt for browser login
         });
 
-        _logger.LogInformation(
-            "Using DefaultAzureCredential (Managed Identity) for Azure Blob Storage authentication to {AccountName}",
-            _settings.AccountName);
+        _logger.LogInformation("Using DefaultAzureCredential (Managed Identity) for Azure Blob Storage authentication to {AccountName}", _settings.AccountName);
 
         return new BlobServiceClient(blobUri, credential);
     }
@@ -117,12 +109,7 @@ public class AzureBlobStorageService : IFileApiStorageService
     }
 
     /// <inheritdoc />
-    public async Task<FileStorageResult> UploadAsync(
-        string virtualDir,
-        string folder,
-        string fileName,
-        Stream fileStream,
-        CancellationToken cancellationToken = default)
+    public async Task<FileStorageResult> UploadAsync(string virtualDir, string folder, string fileName, Stream fileStream, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -170,22 +157,14 @@ public class AzureBlobStorageService : IFileApiStorageService
     }
 
     /// <inheritdoc />
-    public async Task<FileStorageResult> UploadAsync(
-        string virtualDir,
-        string folder,
-        string fileName,
-        byte[] fileBytes,
-        CancellationToken cancellationToken = default)
+    public async Task<FileStorageResult> UploadAsync(string virtualDir, string folder, string fileName, byte[] fileBytes, CancellationToken cancellationToken = default)
     {
         using var stream = new MemoryStream(fileBytes);
         return await UploadAsync(virtualDir, folder, fileName, stream, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<List<FileApiFileInfo>> ListFilesAsync(
-        string virtualDir,
-        string folder,
-        CancellationToken cancellationToken = default)
+    public async Task<List<FileApiFileInfo>> ListFilesAsync(string virtualDir, string folder, CancellationToken cancellationToken = default)
     {
         var files = new List<FileApiFileInfo>();
 
@@ -196,11 +175,7 @@ public class AzureBlobStorageService : IFileApiStorageService
 
             _logger.LogInformation("Listing blobs with prefix {Prefix} in container {Container}", prefix, _containerName);
 
-            await foreach (var blobItem in containerClient.GetBlobsAsync(
-                traits: BlobTraits.Metadata,
-                states: BlobStates.None,
-                prefix: prefix,
-                cancellationToken: cancellationToken))
+            await foreach (var blobItem in containerClient.GetBlobsAsync(traits: BlobTraits.Metadata, states: BlobStates.None, prefix: prefix, cancellationToken: cancellationToken))
             {
                 files.Add(new FileApiFileInfo
                 {
@@ -226,11 +201,7 @@ public class AzureBlobStorageService : IFileApiStorageService
     }
 
     /// <inheritdoc />
-    public async Task<FileStorageResult> DeleteAsync(
-        string virtualDir,
-        string folder,
-        string fileName,
-        CancellationToken cancellationToken = default)
+    public async Task<FileStorageResult> DeleteAsync(string virtualDir, string folder, string fileName, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -286,11 +257,7 @@ public class AzureBlobStorageService : IFileApiStorageService
     }
 
     /// <inheritdoc />
-    public async Task<(Stream? Stream, string ContentType, string? ErrorMessage)> DownloadAsync(
-        string virtualDir,
-        string folder,
-        string fileName,
-        CancellationToken cancellationToken = default)
+    public async Task<(Stream? Stream, string ContentType, string? ErrorMessage)> DownloadAsync(string virtualDir, string folder, string fileName, CancellationToken cancellationToken = default)
     {
         try
         {
