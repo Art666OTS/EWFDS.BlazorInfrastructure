@@ -38,7 +38,12 @@ public class AzureBlobStorageService : IFileApiStorageService
 
     private string GetContainerName()
     {
-        return _environment.EnvironmentName.ToLowerInvariant() switch
+        // Use TargetEnvironment override if set, otherwise fall back to hosting environment
+        var targetEnv = !string.IsNullOrWhiteSpace(_settings.TargetEnvironment)
+            ? _settings.TargetEnvironment
+            : _environment.EnvironmentName;
+
+        return targetEnv.ToLowerInvariant() switch
         {
             "development" => _settings.Containers.Development,
             "staging" => _settings.Containers.Staging,
@@ -93,6 +98,14 @@ public class AzureBlobStorageService : IFileApiStorageService
             }
             else
             {
+                // In development, auto-create the container for convenience
+                if (_environment.IsDevelopment())
+                {
+                    _logger.LogInformation("Container '{Container}' does not exist. Creating it for development...", _containerName);
+                    await containerClient.CreateIfNotExistsAsync(PublicAccessType.None, cancellationToken: cancellationToken);
+                    return (true, $"Azure Blob Storage connected. Container '{_containerName}' was created.");
+                }
+
                 return (false, $"Container '{_containerName}' does not exist. Please create it in Azure Portal.");
             }
         }
@@ -295,9 +308,9 @@ public class AzureBlobStorageService : IFileApiStorageService
     /// <inheritdoc />
     public string GetDownloadUrl(string virtualDir, string folder, string fileName)
     {
-        // For Azure Blob Storage with Managed Identity, we can't generate SAS tokens directly
-        // Return a proxy URL that the controller will handle
-        return $"/api/filestorage/download/{Uri.EscapeDataString(virtualDir)}/{Uri.EscapeDataString(folder)}/{Uri.EscapeDataString(fileName)}";
+        // Use the same proxy URL format as FileApiStorageService for consistency
+        // This matches the existing /api/fileproxy/download endpoint in FileStorageController
+        return $"/api/fileproxy/download?virtualDir={Uri.EscapeDataString(virtualDir ?? "Documents")}&folder={Uri.EscapeDataString(folder ?? "")}&file={Uri.EscapeDataString(fileName)}";
     }
 
     /// <summary>

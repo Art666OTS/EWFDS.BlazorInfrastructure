@@ -29,20 +29,13 @@ public class UserAuthService : IUserAuthService
     private readonly IDataPortalFactory _dataPortalFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IApplicationUserIdentity _applicationUserIdentity;
-    private readonly ILoadApplicationUser _loadApplicationUser;
     private readonly IUserStateService _userStateService;
 
-    public UserAuthService(
-        IDataPortalFactory dataPortalFactory,
-        IHttpContextAccessor httpContextAccessor,
-        IApplicationUserIdentity applicationUserIdentity,
-        ILoadApplicationUser loadApplicationUser,
-        IUserStateService userStateService)
+    public UserAuthService(IDataPortalFactory dataPortalFactory, IHttpContextAccessor httpContextAccessor, IApplicationUserIdentity applicationUserIdentity, IUserStateService userStateService)
     {
         _dataPortalFactory = dataPortalFactory;
         _httpContextAccessor = httpContextAccessor;
         _applicationUserIdentity = applicationUserIdentity;
-        _loadApplicationUser = loadApplicationUser;
         _userStateService = userStateService;
     }
 

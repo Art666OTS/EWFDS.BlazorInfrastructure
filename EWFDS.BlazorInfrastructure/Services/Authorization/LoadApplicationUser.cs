@@ -42,7 +42,7 @@ namespace EWFDS.BlazorInfrastructure.Services.Authorization
             // Check authorization based on roles
             aui.isAuthorised = aui.IsInRole("Pick") || aui.IsInRole("Pack");
 
-            return aui;
+            return (IApplicationUserIdentity)aui;
         }
 
         private List<Claim> BuildAllRoles(int userLevel)
@@ -96,45 +96,52 @@ namespace EWFDS.BlazorInfrastructure.Services.Authorization
 
         public (bool OK, string eMsg) CheckDBRecords(IApplicationUserIdentity aui)
         {
-            if (aui.WFDSStaff)
+            if (aui.IsAuthenticated)
             {
-                if (!ValidIPAddress(aui.IPAddress, aui.LogonID))
+                if (aui.WFDSStaff)
                 {
-                    return (false, "IP address outside valid range. Contact eWFDS System Administrator");
+                    if (!ValidIPAddress(aui.IPAddress, aui.LogonID))
+                    {
+                        return (false, "IP address outside valid range. Contact eWFDS System Administrator");
+                    }
                 }
-            }
+                Console.Write($"Checking DB records for user: {aui.LogonID}, COID: {aui.COID}, IP: {aui.IPAddress}, WFDSStaff: {aui.WFDSStaff}, IsUser: {aui.IsUser}, Auth: {aui.IsAuthenticated}\n");
+                if (!CheckForSuspensionOrDeletion(aui))
+                {
+                    return (false, "User suspended or deleted");
+                }
 
-            if (!CheckForSuspensionOrDeletion(aui))
-            {
-                return (false, "User suspended or deleted");
-            }
+                if (aui.WFDSStaff)
+                {
+                    return (true, string.Empty);
+                }
 
-            if (aui.WFDSStaff)
-            {
+                if (!CheckLoginHasCompany(aui))
+                {
+                    return (false, "Company check failed");
+                }
+
+                if (!CheckIfCompanyOK(aui))
+                {
+                    return (false, "Company check failed");
+                }
+
+                // Check for associated companies
+                string ca = string.Format("CACOID = {0} AND NOT(CAGroupBy IS NULL)", aui.COID);
+                CompanyAssociatedList CAC = _dataPortalFactory.GetPortal<CompanyAssociatedList>().Fetch(ca);
+                // CAFlag logic preserved but not currently used
+
+                if (aui.IsUser)
+                {
+                    return (true, string.Empty);
+                }
+
                 return (true, string.Empty);
             }
-
-            if (!CheckLoginHasCompany(aui))
-            {
-                return (false, "Company check failed");
+            else
+            { 
+                return (false, "Not Authenticated"); 
             }
-
-            if (!CheckIfCompanyOK(aui))
-            {
-                return (false, "Company check failed");
-            }
-
-            // Check for associated companies
-            string ca = string.Format("CACOID = {0} AND NOT(CAGroupBy IS NULL)", aui.COID);
-            CompanyAssociatedList CAC = _dataPortalFactory.GetPortal<CompanyAssociatedList>().Fetch(ca);
-            // CAFlag logic preserved but not currently used
-
-            if (aui.IsUser)
-            {
-                return (true, string.Empty);
-            }
-
-            return (true, string.Empty);
         }
 
         private bool CheckForSuspensionOrDeletion(IApplicationUserIdentity thisUser)

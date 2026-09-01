@@ -114,49 +114,50 @@ namespace EWFDS.BlazorInfrastructure.Services.Identity
 
         public IApplicationUserIdentity GetIdentityCreateActivity(string un, string pwd, HttpContext? context)
         {
-            GetThisUser(un, pwd, context?.Connection?.RemoteIpAddress);
-            (bool OK, string eMsg) = _loadApplicationUser.CheckDBRecords(this);
-            if (OK)
+            if (GetThisUser(un, pwd, context?.Connection?.RemoteIpAddress))
             {
-                // Create ACTIVITY
-                Assembly ass = Assembly.GetExecutingAssembly();
-                AssemblyName assName = ass.GetName();
-                Version? assVersion = assName.Version;
-                string assVers = assVersion?.ToString() ?? "1.0.0.0";
-
-                ACTIVITYEdit ai = _dataPortalFactory.GetPortal<ACTIVITYEdit>().Create();
-                ai.BOIsError = false;
-                ai.CreatedDateTime = DateTime.Now;
-                ai.ActionText = _appConfig.SeedActivityText;
-                ai.CreatedByName = _appConfig.ApplicationName;
-                ai.CreatedByID = Customer!.CustID;
-                ai.COID = Customer.CustCo;
-                ai.Source = "LoginAsync";
-                ai.Controller = "Login.razor";
-                ai.State = "OK";
-                ai.Extra = assVers;
-                ai.LoginKey = Guid.NewGuid();
-                ai.IP_Address = context?.Connection?.RemoteIpAddress?.ToString();
-
-                if (ai.IsSavable)
+                (bool OK, string eMsg) = _loadApplicationUser.CheckDBRecords(this);
+                if (OK)
                 {
-                    ai = ai.Save();
-                    ACT_ID = ai.Id;
-                    LoginGUID = ai.LoginKey;
-                    _loadApplicationUser.BuildClaims(this, ai.Id, ai.LoginKey);
-                }
-                else
-                {
-                    IsAuthenticated = false;
-                    var brd = new List<string>();
-                    foreach (BrokenRule br in ai.BrokenRulesCollection)
+                    // Create ACTIVITY
+                    Assembly ass = Assembly.GetExecutingAssembly();
+                    AssemblyName assName = ass.GetName();
+                    Version? assVersion = assName.Version;
+                    string assVers = assVersion?.ToString() ?? "1.0.0.0";
+
+                    ACTIVITYEdit ai = _dataPortalFactory.GetPortal<ACTIVITYEdit>().Create();
+                    ai.BOIsError = false;
+                    ai.CreatedDateTime = DateTime.Now;
+                    ai.ActionText = _appConfig.SeedActivityText;
+                    ai.CreatedByName = _appConfig.ApplicationName;
+                    ai.CreatedByID = Customer!.CustID;
+                    ai.COID = Customer.CustCo;
+                    ai.Source = "LoginAsync";
+                    ai.Controller = "Login.razor";
+                    ai.State = "OK";
+                    ai.Extra = assVers;
+                    ai.LoginKey = Guid.NewGuid();
+                    ai.IP_Address = context?.Connection?.RemoteIpAddress?.ToString();
+
+                    if (ai.IsSavable)
                     {
-                        brd.Add(br.Description);
+                        ai = ai.Save();
+                        ACT_ID = ai.Id;
+                        LoginGUID = ai.LoginKey;
+                        _loadApplicationUser.BuildClaims(this, ai.Id, ai.LoginKey);
                     }
-                    message = string.Join(Environment.NewLine, brd.ToArray());
+                    else
+                    {
+                        IsAuthenticated = false;
+                        var brd = new List<string>();
+                        foreach (BrokenRule br in ai.BrokenRulesCollection)
+                        {
+                            brd.Add(br.Description);
+                        }
+                        message = string.Join(Environment.NewLine, brd.ToArray());
+                    }
                 }
             }
-
             return this;
         }
 
@@ -164,39 +165,47 @@ namespace EWFDS.BlazorInfrastructure.Services.Identity
 
         #region Data Access
 
-        private void GetThisUser(string un, string pw, System.Net.IPAddress? ip)
+        private Boolean GetThisUser(string un, string pw, System.Net.IPAddress? ip)
         {
-            // Use parameterized query via ColumnNamesCriteria to prevent SQL injection
-            var criteria = new CUSTOMERList.ColumnNamesCriteria(un, CUSTOMERDTO.ColumnNames.CUSTCODE);
-            CUSTOMERList CC = _dataPortalFactory.GetPortal<CUSTOMERList>().Fetch(criteria);
+            try
+            {
+                // Use parameterized query via ColumnNamesCriteria to prevent SQL injection
+                var criteria = new CUSTOMERList.ColumnNamesCriteria(un, CUSTOMERDTO.ColumnNames.CUSTCODE);
+                CUSTOMERList CC = _dataPortalFactory.GetPortal<CUSTOMERList>().Fetch(criteria);
 
-            if (CC.Count == 0)
-            {
-                LoginNotFound("No record in Database");
-                return;
-            }
+                if (CC.Count == 0)
+                {
+                    LoginNotFound("No record in Database");
+                    return false;
+                }
 
-            // Check case sensitive password match
-            if (pw.Equals(CC[0].CustPassword))
-            {
-                if (CC[0].CustDeleted)
+                // Check case sensitive password match
+                if (pw.Equals(CC[0].CustPassword))
                 {
-                    LoginNotFound("Record is marked as Deleted");
-                    return;
+                    if (CC[0].CustDeleted)
+                    {
+                        LoginNotFound("Record is marked as Deleted");
+                        return false;
+                    }
+                    if (CC[0].CustSuspendFlag)
+                    {
+                        LoginNotFound("Record is marked as Suspended");
+                        return false;
+                    }
+                    // Set values
+                    LoginFound(CC[0], ip);
+                    return true;
                 }
-                if (CC[0].CustSuspendFlag)
+                else
                 {
-                    LoginNotFound("Record is marked as Suspended");
-                    return;
+                    LoginNotFound("Invalid UserName/Password combination");
+                    return false;
                 }
-                // Set values
-                LoginFound(CC[0], ip);
-                return;
             }
-            else
+            catch(Exception ex)
             {
-                LoginNotFound("Invalid UserName/Password combination");
-                return;
+                LoginNotFound($"Error fetching user: {ex.Message}");
+                return false;
             }
         }
 

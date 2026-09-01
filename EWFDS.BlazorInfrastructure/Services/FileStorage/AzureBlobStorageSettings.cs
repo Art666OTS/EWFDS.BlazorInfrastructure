@@ -23,6 +23,15 @@ public class AzureBlobStorageSettings
     public bool UseManagedIdentity { get; set; } = true;
 
     /// <summary>
+    /// Override the target environment for container selection.
+    /// When set (Development, Staging, or Production), this determines which container to use
+    /// regardless of the actual hosting environment. When empty or not set, falls back to
+    /// IHostEnvironment.EnvironmentName.
+    /// Useful for testing against staging/production containers from a development machine.
+    /// </summary>
+    public string? TargetEnvironment { get; set; }
+
+    /// <summary>
     /// Container names for each environment.
     /// </summary>
     public EnvironmentContainers Containers { get; set; } = new();
