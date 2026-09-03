@@ -9,7 +9,6 @@ namespace EWFDS.BlazorInfrastructure.Services.Theming
     {
         private const string STORAGE_KEY = "app-theme";
         private const string DEFAULT_THEME = "default-ocean-blue";
-        private const string TELERIK_VERSION = "14.0.0";
 
         // For Razor Class Libraries, JS files are served from _content/{AssemblyName}/
         private const string JS_MODULE_PATH = "./_content/EWFDS.BlazorInfrastructure/js/themeService.js";
@@ -40,56 +39,56 @@ namespace EWFDS.BlazorInfrastructure.Services.Theming
                 {
                     Name = "default-main",
                     DisplayName = "Default Main",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-default/swatches/default-main.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-default/swatches/default-main.css",
                     Description = "Classic default theme with main colors"
                 },
                 new ThemeOption
                 {
                     Name = "default-ocean-blue",
                     DisplayName = "Ocean Blue",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-default/swatches/default-ocean-blue.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-default/swatches/default-ocean-blue.css",
                     Description = "Default theme with ocean blue accent"
                 },
                 new ThemeOption
                 {
                     Name = "default-purple",
                     DisplayName = "Purple",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-default/swatches/default-purple.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-default/swatches/default-purple.css",
                     Description = "Default theme with purple accent"
                 },
                 new ThemeOption
                 {
                     Name = "default-nordic",
                     DisplayName = "Nordic",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-default/swatches/default-nordic.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-default/swatches/default-nordic.css",
                     Description = "Default theme with nordic colors"
                 },
                 new ThemeOption
                 {
                     Name = "default-turquoise",
                     DisplayName = "Turquoise",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-default/swatches/default-turquoise.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-default/swatches/default-turquoise.css",
                     Description = "Default theme with turquoise accent"
                 },
                 new ThemeOption
                 {
                     Name = "bootstrap-main",
                     DisplayName = "Bootstrap",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-bootstrap/swatches/bootstrap-main.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-bootstrap/swatches/bootstrap-main.css",
                     Description = "Bootstrap-inspired theme"
                 },
                 new ThemeOption
                 {
                     Name = "material-main",
                     DisplayName = "Material",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-material/swatches/material-main.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-material/swatches/material-main.css",
                     Description = "Google Material Design theme"
                 },
                 new ThemeOption
                 {
                     Name = "fluent-main",
                     DisplayName = "Fluent",
-                    Url = $"https://blazor.cdn.telerik.com/blazor/{TELERIK_VERSION}/kendo-theme-fluent/swatches/fluent-main.css",
+                    Url = $"https://blazor.cdn.telerik.com/blazor/{TelerikVersionProvider.Version}/kendo-theme-fluent/swatches/fluent-main.css",
                     Description = "Microsoft Fluent Design theme"
                 }
             };
