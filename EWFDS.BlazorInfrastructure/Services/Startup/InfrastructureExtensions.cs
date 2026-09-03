@@ -417,8 +417,8 @@ namespace EWFDS.BlazorInfrastructure.Services.Startup
                 return Results.Json(payload, statusCode: healthy ? 200 : 503);
             });
 
-            // Virtual directory inspection intentionally left in Program.cs where app-level services
-            // and routing are configured. This shared infra method does not perform that check.
+            // Virtual directory inspection is performed above in this shared infrastructure
+            // method, so callers (e.g. Program.cs) do not need to repeat it.
 
             // Emit a clear readiness message after all startup validation succeeded
             try

@@ -193,9 +193,13 @@ namespace EWFDS.BlazorInfrastructure.Services.Theming
                 {
                     await _module.DisposeAsync();
                 }
+                catch (JSDisconnectedException)
+                {
+                    // Expected when the circuit has already disconnected (e.g. on page reload).
+                }
                 catch
                 {
-                    // Ignore disposal errors
+                    // Ignore any other disposal errors
                 }
             }
 
