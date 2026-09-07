@@ -18,41 +18,61 @@ export function setTheme(themeUrl, themeName) {
         }
     });
 
-    let themeLink = document.getElementById(linkId);
-    const isNewLink = !themeLink;
+    const oldThemeLink = document.getElementById(linkId);
 
-    if (isNewLink) {
-        // Create the link element if it doesn't exist
-        themeLink = document.createElement('link');
-        themeLink.id = linkId;
-        themeLink.rel = 'stylesheet';
-        themeLink.type = 'text/css';
+    // If the requested theme is already applied, do nothing.
+    if (oldThemeLink && oldThemeLink.href === new URL(themeUrl, document.baseURI).href) {
+        updateBodyThemeClass(themeName);
+        return;
     }
 
-    // Listen for stylesheet load to refresh charts
-    themeLink.onload = function() {
-        console.log(`Theme stylesheet loaded: ${themeName}`);
+    // Double-buffered swap: load the new theme into a SEPARATE link element and
+    // keep the old theme applied until the new one has fully loaded. This avoids
+    // a flash of unstyled (large) icons that happens when the href of the live
+    // stylesheet is mutated in place, because the browser drops the old CSS
+    // rules immediately while it fetches the new file.
+    const head = document.head || document.getElementsByTagName('head')[0];
+
+    const newThemeLink = document.createElement('link');
+    newThemeLink.rel = 'stylesheet';
+    newThemeLink.type = 'text/css';
+    // Use a temporary id while loading so getCurrentTheme() keeps returning the
+    // currently applied (old) theme until the swap completes.
+    newThemeLink.id = `${linkId}-loading`;
+
+    const finalizeSwap = () => {
+        // Promote the freshly loaded link to be the managed theme link and
+        // remove the previous one now that the new styles are guaranteed present.
+        newThemeLink.id = linkId;
+        if (oldThemeLink && oldThemeLink !== newThemeLink) {
+            oldThemeLink.remove();
+        }
+    };
+
+    newThemeLink.onload = function () {
+        finalizeSwap();
+        updateBodyThemeClass(themeName);
+        console.log(`Theme stylesheet loaded: ${themeName} (${themeUrl})`);
         // Force repaint of Telerik charts after theme loads
         refreshCharts();
     };
 
-    themeLink.onerror = function() {
+    newThemeLink.onerror = function () {
         console.error(`Failed to load theme: ${themeUrl}`);
+        // Loading failed - discard the new link and keep the old theme applied.
+        newThemeLink.remove();
     };
 
-    // Update the href to load the new theme
-    themeLink.href = themeUrl;
+    newThemeLink.href = themeUrl;
 
-    if (isNewLink) {
-        // Insert after the head or as first child of head
-        const head = document.head || document.getElementsByTagName('head')[0];
-        head.appendChild(themeLink);
+    // Insert the new link AFTER the old one so cascade order is preserved.
+    if (oldThemeLink && oldThemeLink.parentNode) {
+        oldThemeLink.parentNode.insertBefore(newThemeLink, oldThemeLink.nextSibling);
+    } else {
+        head.appendChild(newThemeLink);
     }
 
-    // Update the body class for additional styling hooks
-    updateBodyThemeClass(themeName);
-
-    console.log(`Theme changed to: ${themeName} (${themeUrl})`);
+    console.log(`Theme change requested: ${themeName} (${themeUrl})`);
 }
 
 function refreshCharts() {
