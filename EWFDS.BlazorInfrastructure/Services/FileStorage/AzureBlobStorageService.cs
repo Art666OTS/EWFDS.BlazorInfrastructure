@@ -38,12 +38,9 @@ public class AzureBlobStorageService : IFileApiStorageService
 
     private string GetContainerName()
     {
-        // Use TargetEnvironment override if set, otherwise fall back to hosting environment
-        var targetEnv = !string.IsNullOrWhiteSpace(_settings.TargetEnvironment)
-            ? _settings.TargetEnvironment
-            : _environment.EnvironmentName;
-
-        return targetEnv.ToLowerInvariant() switch
+        // Container selection is driven solely by the hosting environment
+        // (ASPNETCORE_ENVIRONMENT) so the environment has a single source of truth.
+        return _environment.EnvironmentName.ToLowerInvariant() switch
         {
             "development" => _settings.Containers.Development,
             "staging" => _settings.Containers.Staging,

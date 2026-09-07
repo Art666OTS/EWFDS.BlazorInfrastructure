@@ -159,6 +159,27 @@ namespace EWFDS.BlazorInfrastructure.Services.Startup
         /// </summary>
         public static WebApplication ValidateInfrastructure(this WebApplication app, string logsDirPath)
         {
+            // Validate hosting environment (single source of truth for the running environment).
+            // Fail fast if ASPNETCORE_ENVIRONMENT is not one of the supported values so that
+            // misconfiguration surfaces at startup instead of causing subtle runtime behaviour.
+            var envName = app.Environment.EnvironmentName;
+            var supportedEnvironments = new[] { "Development", "Staging", "Production" };
+            var isSupportedEnvironment = false;
+            foreach (var supported in supportedEnvironments)
+            {
+                if (string.Equals(envName, supported, StringComparison.OrdinalIgnoreCase))
+                {
+                    isSupportedEnvironment = true;
+                    break;
+                }
+            }
+            if (!isSupportedEnvironment)
+            {
+                var msg = $"ASPNETCORE_ENVIRONMENT '{envName}' is not supported. Expected one of: {string.Join(", ", supportedEnvironments)}.";
+                Log.Fatal(msg);
+                throw new InvalidOperationException(msg);
+            }
+
             // Validate SignalR
             var hubOptions = app.Services.GetRequiredService<IOptions<Microsoft.AspNetCore.SignalR.HubOptions>>();
             if (hubOptions.Value.MaximumReceiveMessageSize == null || hubOptions.Value.MaximumReceiveMessageSize <= 32 * 1024)

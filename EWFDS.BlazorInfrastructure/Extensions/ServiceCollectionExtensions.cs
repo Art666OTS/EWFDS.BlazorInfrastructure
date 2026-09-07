@@ -2,6 +2,7 @@ using BusinessLibrary;
 using EWFDS.BlazorInfrastructure.Services.Authentication;
 using EWFDS.BlazorInfrastructure.Services.Authorization;
 using EWFDS.BlazorInfrastructure.Services.Email;
+using EWFDS.BlazorInfrastructure.Services.Hosting;
 using EWFDS.BlazorInfrastructure.Services.ErrorHandling;
 using EWFDS.BlazorInfrastructure.Services.FileStorage;
 using EWFDS.BlazorInfrastructure.Services.Identity;
@@ -123,9 +124,13 @@ namespace EWFDS.BlazorInfrastructure.Extensions
         /// Call this method to register all shared infrastructure services.
         /// </summary>
         /// <param name="services">The service collection.</param>
+        /// <param name="configuration">The application configuration (used to bind file storage settings).</param>
         /// <returns>The service collection for chaining.</returns>
-        public static IServiceCollection AddEwfdsBlazorInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddEwfdsBlazorInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            // Phase 0: Environment (single source of truth derived from IHostEnvironment)
+            services.AddSingleton<IAppEnvironment, AppEnvironment>();
+
             // Phase 1: Theming
             services.AddThemeService();
 
@@ -142,6 +147,9 @@ namespace EWFDS.BlazorInfrastructure.Extensions
 
             // Phase 5: Email Services
             services.AddEmailService();
+
+            // Phase 6: File Storage (Azure Blob Storage)
+            services.AddAzureBlobStorage(configuration);
 
             return services;
         }
