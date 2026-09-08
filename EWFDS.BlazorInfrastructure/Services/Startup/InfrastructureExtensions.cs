@@ -301,6 +301,43 @@ namespace EWFDS.BlazorInfrastructure.Services.Startup
                 }
             }
 
+            // Validate the mandatory "Required" settings section. Every key under "Required"
+            // must be present and non-blank, otherwise the app must not start. This surfaces
+            // mandatory-configuration failures at boot rather than at runtime.
+            var requiredSection = app.Configuration.GetSection("Required");
+            if (!requiredSection.Exists())
+            {
+                var msg = "Required section must be configured in appsettings.json.";
+                Log.Fatal(msg);
+                throw new InvalidOperationException(msg);
+            }
+
+            // Keys that must exist. Checking explicitly catches a completely omitted key,
+            // which the blank-value loop below cannot detect (absent keys have no child).
+            string[] expectedRequiredKeys = { "ShopifyGRN", "WFDSOrdersApiGUID" };
+            foreach (var expectedKey in expectedRequiredKeys)
+            {
+                if (requiredSection.GetSection(expectedKey).Value is null)
+                {
+                    var msg = $"Required setting '{expectedKey}' is missing from the 'Required' section in appsettings.json.";
+                    Log.Fatal(msg);
+                    throw new InvalidOperationException(msg);
+                }
+            }
+
+            // Every leaf key present under "Required" must have a non-blank value.
+            foreach (var child in requiredSection.GetChildren())
+            {
+                bool hasChildren = false;
+                foreach (var _ in child.GetChildren()) { hasChildren = true; break; }
+                if (!hasChildren && string.IsNullOrWhiteSpace(child.Value))
+                {
+                    var msg = $"Required setting '{child.Key}' is present but empty/blank in the 'Required' section.";
+                    Log.Fatal(msg);
+                    throw new InvalidOperationException(msg);
+                }
+            }
+
             // Virtual directories are now served securely via SecureVirtualFileController.
             // Verify the virtual directory configuration and log the configured mappings. Treat missing
             // IVirtualDirectoryService as a fatal startup error so misconfiguration is visible in logs.

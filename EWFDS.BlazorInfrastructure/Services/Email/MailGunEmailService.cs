@@ -1,4 +1,5 @@
 using BusinessLibrary;
+using EWFDS.BlazorInfrastructure.Services.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -15,6 +16,7 @@ namespace EWFDS.BlazorInfrastructure.Services.Email
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<MailGunEmailService> _logger;
+        private readonly IAppEnvironment _appEnvironment;
 
         // Configuration keys
         private const string CONFIG_PATH = "SystemSettings:EmailSettings:MailGun";
@@ -25,10 +27,11 @@ namespace EWFDS.BlazorInfrastructure.Services.Email
         private const string PORT_KEY = "MAILGUN_PORT";
         private const string TLS_SSL_KEY = "MAILGUN_TLS_SSL";
 
-        public MailGunEmailService(IConfiguration configuration, ILogger<MailGunEmailService> logger)
+        public MailGunEmailService(IConfiguration configuration, ILogger<MailGunEmailService> logger, IAppEnvironment appEnvironment)
         {
             _configuration = configuration;
             _logger = logger;
+            _appEnvironment = appEnvironment;
         }
 
         public async Task<EmailResult> SendErrorEmailAsync(string subject, string body, bool isHTML = false)
@@ -425,7 +428,7 @@ namespace EWFDS.BlazorInfrastructure.Services.Email
                     ApiKey = _configuration[$"{CONFIG_PATH}:{API_KEY_KEY}"] ?? string.Empty,
                     Port = int.TryParse(_configuration[$"{CONFIG_PATH}:{PORT_KEY}"], out int port) ? port : 587,
                     EnableTls = (_configuration[$"{CONFIG_PATH}:{TLS_SSL_KEY}"] ?? "enabled").Equals("enabled", StringComparison.OrdinalIgnoreCase),
-                    AppMode = _configuration["SystemSettings:ApplicationMode"] ?? string.Empty
+                    AppMode = _appEnvironment.Name
                 };
 
                 // Validate configuration

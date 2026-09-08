@@ -51,8 +51,19 @@ public class AzureBlobStorageService : IFileApiStorageService
 
     private BlobServiceClient CreateBlobServiceClient()
     {
-        // If connection string is provided and we're not forcing Managed Identity, use it
-        if (!string.IsNullOrWhiteSpace(_settings.ConnectionString) && !_settings.UseManagedIdentity)
+        // Diagnostic: surface exactly what was bound so we can tell why a given auth path is chosen.
+        _logger.LogInformation(
+            "Resolving Azure Blob Storage credentials. Environment={Environment}, UseManagedIdentity={UseManagedIdentity}, HasConnectionString={HasConnectionString}, AccountName={AccountName}",
+            _environment.EnvironmentName,
+            _settings.UseManagedIdentity,
+            !string.IsNullOrWhiteSpace(_settings.ConnectionString),
+            string.IsNullOrWhiteSpace(_settings.AccountName) ? "(none)" : _settings.AccountName);
+
+        // Prefer the connection string whenever one is provided and either Managed Identity is not
+        // being forced or we are running in Development. This ensures local dev uses the account key
+        // from user secrets even if UseManagedIdentity was left at its default (true).
+        if (!string.IsNullOrWhiteSpace(_settings.ConnectionString) &&
+            (!_settings.UseManagedIdentity || _environment.IsDevelopment()))
         {
             _logger.LogInformation("Using connection string for Azure Blob Storage authentication");
             return new BlobServiceClient(_settings.ConnectionString);
