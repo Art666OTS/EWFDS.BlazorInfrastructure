@@ -18,7 +18,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
     <PackageReference Include="Telerik.UI.for.Blazor">
-      <Version>15.0.0</Version>
+      <Version>15.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
