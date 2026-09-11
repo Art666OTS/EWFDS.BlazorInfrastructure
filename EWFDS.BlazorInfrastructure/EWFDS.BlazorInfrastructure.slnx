@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/Docs/">
+    <File Path="..\Docs\Architecture-Separation.md" />
+    <File Path="..\Docs\README.md" />
+    <File Path="..\Docs\Api-README.md" />
+  </Folder>
   <Project Path="EWFDS.BlazorInfrastructure.csproj" />
   <Project Path="..\Tests\EWFDS.BlazorInfrastructure.ArchitectureTests\EWFDS.BlazorInfrastructure.ArchitectureTests.csproj" />
 </Solution>
