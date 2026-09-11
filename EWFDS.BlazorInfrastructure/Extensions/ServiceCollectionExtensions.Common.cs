@@ -8,6 +8,7 @@ using EWFDS.BlazorInfrastructure.Common.ErrorHandling;
 using EWFDS.BlazorInfrastructure.Common.FileStorage;
 using EWFDS.BlazorInfrastructure.Common.FileSystem;
 using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.BlazorInfrastructure.Common.State;
 using EWFDS.BlazorInfrastructure.Blazor.Identity;
 using EWFDSBL8.Library.Shared.Services;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,20 @@ namespace EWFDS.BlazorInfrastructure.Extensions
     /// </summary>
     public static partial class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds the user state service to the service collection. The user state is a
+        /// host-agnostic in-memory holder for the current authenticated user and is
+        /// consumed by shared services (e.g. UserAuthService), so it is registered as
+        /// part of the API-safe core.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddUserStateService(this IServiceCollection services)
+        {
+            services.AddScoped<IUserStateService, UserStateService>();
+            return services;
+        }
+
         /// <summary>
         /// Adds identity and authorization services to the service collection.
         /// Requires IApplicationConfig to be registered first by the consuming application.
@@ -70,7 +85,6 @@ namespace EWFDS.BlazorInfrastructure.Extensions
             services.AddScoped<IActivityTokenValidator, ActivityTokenValidator>();
             services.AddScoped<IUserAuthService, UserAuthService>();
             services.AddScoped<ITokenBasedAuthService, TokenBasedAuthService>();
-            services.AddScoped<UserAuthorised>();
             return services;
         }
 
@@ -139,6 +153,7 @@ namespace EWFDS.BlazorInfrastructure.Extensions
             services.AddSingleton<IAppEnvironment, AppEnvironment>();
 
             // Phase 1: Identity & Authorization
+            services.AddUserStateService();
             services.AddIdentityServices();
             services.AddAuthorizationServices();
             services.AddAuthenticationServices();

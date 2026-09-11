@@ -1,6 +1,6 @@
 using Csla;
 using EWFDS.BlazorInfrastructure.Common.Identity;
-using EWFDS.BlazorInfrastructure.Blazor.State;
+using EWFDS.BlazorInfrastructure.Common.State;
 using EWFDSBL8BusinessLibrary;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

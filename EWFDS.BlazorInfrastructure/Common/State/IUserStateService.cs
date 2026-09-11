@@ -1,6 +1,6 @@
 using EWFDS.BlazorInfrastructure.Common.Identity;
 
-namespace EWFDS.BlazorInfrastructure.Blazor.State
+namespace EWFDS.BlazorInfrastructure.Common.State
 {
     /// <summary>
     /// Service for managing user state across the application.

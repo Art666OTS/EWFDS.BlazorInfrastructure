@@ -1,6 +1,5 @@
 using EWFDS.BlazorInfrastructure.Blazor.Authorization;
 using EWFDS.BlazorInfrastructure.Blazor.Circuits;
-using EWFDS.BlazorInfrastructure.Blazor.State;
 using EWFDS.BlazorInfrastructure.Blazor.Theming;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
@@ -23,17 +22,6 @@ namespace EWFDS.BlazorInfrastructure.Extensions
         public static IServiceCollection AddThemeService(this IServiceCollection services)
         {
             services.AddScoped<IThemeService, ThemeService>();
-            return services;
-        }
-
-        /// <summary>
-        /// Adds the user state service to the service collection.
-        /// </summary>
-        /// <param name="services">The service collection.</param>
-        /// <returns>The service collection for chaining.</returns>
-        public static IServiceCollection AddUserStateService(this IServiceCollection services)
-        {
-            services.AddScoped<IUserStateService, UserStateService>();
             return services;
         }
 
@@ -77,8 +65,8 @@ namespace EWFDS.BlazorInfrastructure.Extensions
             // Theming
             services.AddThemeService();
 
-            // User State
-            services.AddUserStateService();
+            // Blazor authorization helper
+            services.AddScoped<UserAuthorised>();
 
             // Blazor authentication state provider
             services.AddBlazorAuthenticationStateProvider();

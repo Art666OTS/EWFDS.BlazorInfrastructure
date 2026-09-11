@@ -1,8 +1,9 @@
 # EWFDS.BlazorInfrastructure — Architecture Separation Review & Design
 
-> Status: **Design proposal (review only — no code has been moved).**
+> Status: **Implemented — migration executed.** Code has been reorganized into
+> `Common/*`, `Blazor/*` and an empty `Api/` placeholder; the old `Services/` tree is gone.
 > Decision recorded: keep a **single project**; separate by **folders + namespaces** only.
-> Author aid: this document is the reference for a future incremental migration.
+> Author aid: this document reflects the completed reorganization (see §6 for the executed steps).
 
 ## 1. Purpose of this project
 
@@ -151,7 +152,6 @@ without another redesign.
   `SelectComponentBase`, `GlobalErrorBoundary`, `StatusMessage`, `Models/AlertType`)
 - `Services/Blazor/CircuitHandlerService.cs` (`CircuitHandler`)
 - `Services/Theming/*` (`IJSRuntime`, Telerik CDN)
-- `Services/State/UserStateService.cs`, `IUserStateService.cs` (circuit-scoped)
 - `Services/Authorization/ComponentBaseWithAuth.cs`, `LayoutComponentBaseWithAuth.cs`,
   `PersistingAuthenticationStateProvider.cs`, `UserAuthorised.cs`
   (`ComponentBase`, `AuthenticationStateProvider`, `RenderMode`)
@@ -180,6 +180,10 @@ without another redesign.
 
 ## 6. Suggested migration order (when you choose to execute)
 
+> Status: **Executed.** All six phases below have been completed and the solution builds
+> successfully after each phase. Code now lives under `Common/*` and `Blazor/*` (with an
+> empty `Api/` placeholder); the old `Services/` tree has been removed.
+
 1. Create the `Common` and `Blazor` top-level folders (and an empty `Api` placeholder). Move
    **leaf** Common files first (Email, Security, FileSystem, Environment, Configuration) —
    lowest coupling, lowest risk.
@@ -190,7 +194,18 @@ without another redesign.
    `BlazorCookieLoginMiddleware`, `BlazorCookieAuthExtensions`).
 5. Split the composition roots into per-area partials; keep the public
    `AddEwfds*` method names unchanged so consuming apps do not break.
+   *(Done: `ServiceCollectionExtensions.Common.cs` holds API-safe registrations and
+   `ServiceCollectionExtensions.Blazor.cs` holds Blazor-only registrations; both are
+   `partial` and the public `AddEwfdsCoreInfrastructure`, `AddEwfdsBlazorUi` and
+   `AddEwfdsBlazorInfrastructure` entry points are unchanged.)*
 6. Add an architecture test / analyzer (optional) to assert the dependency direction in rule 2.
+   *(Done: `Tests/EWFDS.BlazorInfrastructure.ArchitectureTests` is a reflection-based xUnit
+   project that fails the build if `Common` depends on `Blazor`/`Api`, or if `Blazor` and
+   `Api` reference each other. On first run it caught a real leak — `Common.Authorization.
+   UserAuthService` depended on `IUserStateService`, which lived under `Blazor.State` and was
+   only registered in the Blazor composition root, so a pure API host would have failed to
+   resolve `UserAuthService`. `IUserStateService`/`UserStateService` were moved to
+   `Common/State` and are now registered by `AddEwfdsCoreInfrastructure`.)*
 
 ## 7. Future option (not chosen now)
 

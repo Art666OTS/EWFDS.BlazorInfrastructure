@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EWFDS.BlazorInfrastructure.csproj" />
+  <Project Path="..\Tests\EWFDS.BlazorInfrastructure.ArchitectureTests\EWFDS.BlazorInfrastructure.ArchitectureTests.csproj" />
+</Solution>
