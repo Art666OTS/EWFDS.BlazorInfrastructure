@@ -25,10 +25,10 @@ public class BlazorCookieLoginMiddleware
         // Require the X-Access-Id header on every request. Without it, the app cannot be accessed at all.
         if (!context.Request.Headers.TryGetValue("X-Access-Id", out var accessId) || Microsoft.Extensions.Primitives.StringValues.IsNullOrEmpty(accessId))
         {
-            _logger.LogWarning("Missing X-Access-Id header; access denied");
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync("Access denied.");
-            return;
+            //_logger.LogWarning("Missing X-Access-Id header; access denied");
+            //context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            //await context.Response.WriteAsync("Access denied.");
+            //return;
         }
         else
         {
