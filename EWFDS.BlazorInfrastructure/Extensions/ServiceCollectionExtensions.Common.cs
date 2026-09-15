@@ -109,6 +109,7 @@ namespace EWFDS.BlazorInfrastructure.Extensions
         public static IServiceCollection AddAuthenticationServices(this IServiceCollection services)
         {
             services.AddSingleton<ILoginService, LoginService>();
+            services.AddScoped<IAccessControlValidationService, AccessControlValidationService>();
             return services;
         }
 
