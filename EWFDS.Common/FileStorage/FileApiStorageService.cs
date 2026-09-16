@@ -3,7 +3,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace EWFDS.BlazorInfrastructure.Common.FileStorage;
+namespace EWFDS.Common.FileStorage;
 
 /// <summary>
 /// File storage service that calls the external File API.

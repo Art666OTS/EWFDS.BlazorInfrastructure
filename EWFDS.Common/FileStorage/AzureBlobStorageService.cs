@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace EWFDS.BlazorInfrastructure.Common.FileStorage;
+namespace EWFDS.Common.FileStorage;
 
 /// <summary>
 /// Azure Blob Storage implementation of IFileApiStorageService using Managed Identity.

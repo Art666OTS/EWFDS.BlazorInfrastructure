@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Hosting;
-using EWFDS.BlazorInfrastructure.Services.Hosting;
 
-namespace EWFDS.BlazorInfrastructure.Common.Hosting;
+namespace EWFDS.Common.Hosting;
 
 /// <summary>
 /// Default <see cref="IAppEnvironment"/> implementation that resolves the running

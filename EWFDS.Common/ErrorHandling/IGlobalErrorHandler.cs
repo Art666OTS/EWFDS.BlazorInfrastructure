@@ -1,4 +1,4 @@
-namespace EWFDS.BlazorInfrastructure.Common.ErrorHandling;
+namespace EWFDS.Common.ErrorHandling;
 
 public interface IGlobalErrorHandler
 {

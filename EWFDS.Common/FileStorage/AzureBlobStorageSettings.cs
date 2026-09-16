@@ -1,4 +1,4 @@
-namespace EWFDS.BlazorInfrastructure.Common.FileStorage;
+namespace EWFDS.Common.FileStorage;
 
 /// <summary>
 /// Configuration settings for Azure Blob Storage.
