@@ -36,8 +36,8 @@ namespace EWFDS.BlazorInfrastructure.Common.Email
 
         public async Task<EmailResult> SendErrorEmailAsync(string subject, string body, bool isHTML = false)
         {
-            string FromName = _configuration[$"EmailSettings:MailGun:MAILGUN_DEFAULT_EMAIL"] ?? string.Empty;
-            string ToName = _configuration[$"EmailSettings:MailGun:MAILGUN_USERNAME"] ?? string.Empty;
+            string FromName = _configuration[$"{CONFIG_PATH}:{DEFAULT_EMAIL_KEY}"] ?? string.Empty;
+            string ToName = _configuration["applicationSettings:NotifyEmail"] ?? string.Empty;
             var errors = new List<string>();
             if (string.IsNullOrWhiteSpace(FromName))
                 errors.Add("Email must have a sender");
