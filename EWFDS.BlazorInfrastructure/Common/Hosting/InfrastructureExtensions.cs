@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
-using EWFDS.BlazorInfrastructure.Common.FileStorage;
+using EWFDS.Common.FileStorage;
 using EWFDS.BlazorInfrastructure.Common.FileSystem;
 using Microsoft.AspNetCore.SignalR;
 using System.Reflection;

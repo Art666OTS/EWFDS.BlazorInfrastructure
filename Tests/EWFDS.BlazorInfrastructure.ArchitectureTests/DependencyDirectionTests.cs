@@ -25,7 +25,7 @@ public class DependencyDirectionTests
     private const string ApiNamespace = RootNamespace + ".Api";
 
     // Any type from the infrastructure assembly is a stable anchor for the assembly under test.
-    private static readonly Assembly InfrastructureAssembly = typeof(IGlobalErrorHandler).Assembly;
+    private static readonly Assembly InfrastructureAssembly = typeof(GlobalExceptionHandlerMiddleware).Assembly;
 
     [Fact]
     public void Common_must_not_depend_on_Blazor()

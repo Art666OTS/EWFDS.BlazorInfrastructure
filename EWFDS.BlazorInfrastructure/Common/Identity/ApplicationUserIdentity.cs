@@ -1,7 +1,7 @@
 using Csla;
 using Csla.Rules;
 using EWFDS.BlazorInfrastructure.Common.Authorization;
-using EWFDS.BlazorInfrastructure.Common.Configuration;
+using EWFDS.Common.Configuration;
 using EWFDSBL8BusinessLibrary;
 using EWFDSBL8DAL;
 using Microsoft.AspNetCore.Http;

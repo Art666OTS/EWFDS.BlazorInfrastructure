@@ -1,4 +1,4 @@
-namespace EWFDS.BlazorInfrastructure.Common.FileStorage;
+namespace EWFDS.Common.FileStorage;
 
 /// <summary>
 /// Result of a file storage operation.

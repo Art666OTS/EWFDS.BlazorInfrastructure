@@ -1,11 +1,12 @@
 using BusinessLibrary;
 using EWFDS.BlazorInfrastructure.Common.Authentication;
 using EWFDS.BlazorInfrastructure.Common.Authorization;
-using EWFDS.BlazorInfrastructure.Common.Email;
+using EWFDS.Common.Email;
 using EWFDS.BlazorInfrastructure.Common.Hosting;
-using EWFDS.BlazorInfrastructure.Services.Hosting;
+using EWFDS.Common.Hosting;
+using EWFDS.Common.ErrorHandling;
 using EWFDS.BlazorInfrastructure.Common.ErrorHandling;
-using EWFDS.BlazorInfrastructure.Common.FileStorage;
+using EWFDS.Common.FileStorage;
 using EWFDS.BlazorInfrastructure.Common.FileSystem;
 using EWFDS.BlazorInfrastructure.Common.Identity;
 using EWFDS.BlazorInfrastructure.Common.State;
@@ -70,7 +71,7 @@ namespace EWFDS.BlazorInfrastructure.Extensions
         public static IServiceCollection AddAzureBlobStorage(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AzureBlobStorageSettings>(configuration.GetSection("AzureBlobStorage"));
-            services.AddScoped<Common.FileStorage.IFileApiStorageService, AzureBlobStorageService>();
+            services.AddScoped<IFileApiStorageService, AzureBlobStorageService>();
             return services;
         }
 

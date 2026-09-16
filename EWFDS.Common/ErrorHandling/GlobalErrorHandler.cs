@@ -2,7 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace EWFDS.BlazorInfrastructure.Common.ErrorHandling;
+namespace EWFDS.Common.ErrorHandling;
 
 public class GlobalErrorHandler : IGlobalErrorHandler
 {

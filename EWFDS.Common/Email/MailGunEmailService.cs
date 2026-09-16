@@ -1,18 +1,17 @@
-using BusinessLibrary;
-using EWFDS.BlazorInfrastructure.Services.Hosting;
+using EWFDS.Common.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
-namespace EWFDS.BlazorInfrastructure.Common.Email
+namespace EWFDS.Common.Email
 {
     /// <summary>
     /// MailGun SMTP email service implementation with attachment support and comprehensive error handling.
-    /// Implements BusinessLibrary.IEmailService for use across all projects.
+    /// Implements IEmailService for use across all projects.
     /// </summary>
-    public class MailGunEmailService : BusinessLibrary.IEmailService
+    public class MailGunEmailService : IEmailService
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<MailGunEmailService> _logger;

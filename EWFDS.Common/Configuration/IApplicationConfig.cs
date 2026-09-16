@@ -1,4 +1,4 @@
-namespace EWFDS.BlazorInfrastructure.Common.Configuration
+namespace EWFDS.Common.Configuration
 {
     /// <summary>
     /// Interface for application-specific configuration values.

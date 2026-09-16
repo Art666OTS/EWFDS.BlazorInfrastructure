@@ -26,5 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\EWFDSBL8\EWFDSBL8.csproj" />
+    <ProjectReference Include="..\EWFDS.Common\EWFDS.Common.csproj" />
   </ItemGroup>
 </Project>

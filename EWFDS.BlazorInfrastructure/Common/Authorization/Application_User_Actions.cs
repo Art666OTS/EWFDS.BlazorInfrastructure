@@ -3,6 +3,7 @@ using BL8DataBaseCore;
 using BusinessLibrary;
 using Csla;
 using Csla.Rules;
+using EWFDS.Common.Email;
 using EWFDS.BlazorInfrastructure.Common.Identity;
 using EWFDSBL8BusinessLibrary;
 using Microsoft.AspNetCore.Http;
