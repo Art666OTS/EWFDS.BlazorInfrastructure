@@ -112,9 +112,9 @@ namespace EWFDS.BlazorInfrastructure.Common.Identity
             return new ApplicationUserIdentity(_dataPortalFactory, _loadApplicationUser, _appConfig);
         }
 
-        public IApplicationUserIdentity GetIdentityCreateActivity(string un, string pwd, HttpContext? context)
+        public IApplicationUserIdentity GetIdentityCreateActivity(string un, string pwd, System.Net.IPAddress? ip)
         {
-            if (GetThisUser(un, pwd, context?.Connection?.RemoteIpAddress))
+            if (GetThisUser(un, pwd, ip))
             {
                 (bool OK, string eMsg) = _loadApplicationUser.CheckDBRecords(this);
                 if (OK)
@@ -137,7 +137,7 @@ namespace EWFDS.BlazorInfrastructure.Common.Identity
                     ai.State = "OK";
                     ai.Extra = assVers;
                     ai.LoginKey = Guid.NewGuid();
-                    ai.IP_Address = context?.Connection?.RemoteIpAddress?.ToString();
+                    ai.IP_Address = ip?.ToString();
 
                     if (ai.IsSavable)
                     {
@@ -230,10 +230,10 @@ namespace EWFDS.BlazorInfrastructure.Common.Identity
             return true;
         }
 
-        public IApplicationUserIdentity ReloadAUI(ACTIVITYInfo ai, HttpContext? context, Guid keyGuid)
+        public IApplicationUserIdentity ReloadAUI(ACTIVITYInfo ai, System.Net.IPAddress? ip, Guid keyGuid)
         {
             CUSTOMERInfo ci = _dataPortalFactory.GetPortal<CUSTOMERInfo>().Fetch(ai.CreatedByID);
-            LoginFound(ci, context?.Connection?.RemoteIpAddress);
+            LoginFound(ci, ip);
             IsAuthenticated = true;
             // Build Claims here
             IApplicationUserIdentity aui = _loadApplicationUser.BuildClaims(this, ai.Id, keyGuid);

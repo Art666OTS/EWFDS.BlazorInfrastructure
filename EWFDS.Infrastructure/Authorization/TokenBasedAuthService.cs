@@ -13,8 +13,8 @@ namespace EWFDS.BlazorInfrastructure.Common.Authorization;
 /// </summary>
 public interface ITokenBasedAuthService
 {
-    Task<LoginResult> LoginWithTokenAsync(Guid loginToken, IHttpContextAccessor context);
-    Task SetupCookieAuthorization(IHttpContextAccessor httpContext, IApplicationUserIdentity AUI);
+    Task<LoginResult> LoginWithTokenAsync(Guid loginToken);
+    Task SetupCookieAuthorization(IApplicationUserIdentity AUI);
 }
 
 /// <summary>
@@ -26,23 +26,26 @@ public class TokenBasedAuthService : ITokenBasedAuthService
     private readonly IActivityTokenValidator _tokenValidator;
     private readonly IApplicationUserIdentity _applicationUserIdentity;
     private readonly IUserAuthService _authService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public TokenBasedAuthService(
         IDataPortalFactory dataPortalFactory,
         IActivityTokenValidator tokenValidator,
         IApplicationUserIdentity applicationUserIdentity,
-        IUserAuthService authService)
+        IUserAuthService authService,
+        IHttpContextAccessor httpContextAccessor)
     {
         _dataPortalFactory = dataPortalFactory;
         _tokenValidator = tokenValidator;
         _applicationUserIdentity = applicationUserIdentity;
         _authService = authService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<LoginResult> LoginWithTokenAsync(Guid loginToken, IHttpContextAccessor context)
+    public async Task<LoginResult> LoginWithTokenAsync(Guid loginToken)
     {
         // Step 1: Validate the token
-        var validationResult = await _tokenValidator.ValidateTokenAsync(loginToken, context.HttpContext?.Connection?.RemoteIpAddress);
+        var validationResult = await _tokenValidator.ValidateTokenAsync(loginToken, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress);
 
         if (!validationResult.IsValid)
         {
@@ -85,16 +88,17 @@ public class TokenBasedAuthService : ITokenBasedAuthService
         }
     }
 
-    public async Task SetupCookieAuthorization(IHttpContextAccessor httpContext, IApplicationUserIdentity AUI)
+    public async Task SetupCookieAuthorization(IApplicationUserIdentity AUI)
     {
-        if (httpContext.HttpContext == null)
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext == null)
         {
             throw new InvalidOperationException("HttpContext is not available.");
         }
 
         var claimsIdentity = new ClaimsIdentity(AUI.claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-        await httpContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+        await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
     }
 }
 

@@ -14,7 +14,6 @@ namespace EWFDS.BlazorInfrastructure.Common.Authorization;
 public interface IUserAuthService
 {
     Task<IApplicationUserIdentity> CheckIsValidLogin(string username, string password);
-    Task LogoutAsync(HttpContext httpContext);
     Task LogoutAsync();
     Task<LoginResult> FindByLoginCodeAsync(string loginCode);
     Task<Guid> GeneratePasswordResetTokenAsync();
@@ -44,7 +43,7 @@ public class UserAuthService : IUserAuthService
         await Task.CompletedTask;
         username = username.Replace("'", "");
         password = password.Replace("'", "");
-        IApplicationUserIdentity AUI = _applicationUserIdentity.GetIdentityCreateActivity(username, password, _httpContextAccessor.HttpContext);
+        IApplicationUserIdentity AUI = _applicationUserIdentity.GetIdentityCreateActivity(username, password, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress);
         return AUI;
     }
 
@@ -52,16 +51,6 @@ public class UserAuthService : IUserAuthService
     {
         // Update the login count and go back to the login screen.
         return failureMsg;
-    }
-
-    public async Task LogoutAsync(HttpContext httpContext)
-    {
-        if (httpContext != null)
-        {
-            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-        // Clear the user state
-        _userStateService.Clear();
     }
 
     public async Task LogoutAsync()

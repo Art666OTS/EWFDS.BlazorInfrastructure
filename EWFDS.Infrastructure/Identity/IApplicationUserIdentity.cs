@@ -1,5 +1,4 @@
 using EWFDSBL8BusinessLibrary;
-using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace EWFDS.BlazorInfrastructure.Common.Identity
@@ -244,18 +243,18 @@ namespace EWFDS.BlazorInfrastructure.Common.Identity
         /// </summary>
         /// <param name="un">Username.</param>
         /// <param name="pwd">Password.</param>
-        /// <param name="context">HTTP context.</param>
+        /// <param name="ip">The remote client IP address, or null if unavailable.</param>
         /// <returns>The authenticated ApplicationUserIdentity.</returns>
-        IApplicationUserIdentity GetIdentityCreateActivity(string un, string pwd, HttpContext context);
+        IApplicationUserIdentity GetIdentityCreateActivity(string un, string pwd, System.Net.IPAddress? ip);
 
         /// <summary>
         /// Reloads the ApplicationUserIdentity from an activity record.
         /// </summary>
         /// <param name="ai">Activity info.</param>
-        /// <param name="context">HTTP context.</param>
+        /// <param name="ip">The remote client IP address, or null if unavailable.</param>
         /// <param name="keyGuid">Login key GUID.</param>
         /// <returns>The reloaded ApplicationUserIdentity.</returns>
-        IApplicationUserIdentity ReloadAUI(ACTIVITYInfo ai, HttpContext context, Guid keyGuid);
+        IApplicationUserIdentity ReloadAUI(ACTIVITYInfo ai, System.Net.IPAddress? ip, Guid keyGuid);
 
         /// <summary>
         /// Reloads the customer for the identity.

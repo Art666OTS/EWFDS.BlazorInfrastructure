@@ -29,6 +29,7 @@ public class LoginService : ILoginService
     private readonly IMemoryCache _loginCache;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<LoginService> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     /// <summary>
     /// Login tokens expire after this duration if not consumed.
@@ -39,11 +40,13 @@ public class LoginService : ILoginService
     public LoginService(
         IServiceProvider serviceProvider,
         ILogger<LoginService> logger,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor)
     {
         _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _loginCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
     }
 
     public void RegisterLoginAttempt(Guid key, string userName, int userId)
@@ -73,11 +76,18 @@ public class LoginService : ILoginService
         return false;
     }
 
-    public async Task<bool> ProcessLoginAsync(Guid keyGuid, HttpContext httpContext)
+    public async Task<bool> ProcessLoginAsync(Guid keyGuid)
     {
         if (keyGuid == Guid.Empty)
         {
             _logger.LogWarning("Invalid login key provided: empty GUID");
+            return false;
+        }
+
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext == null)
+        {
+            _logger.LogWarning("No active HttpContext available for login processing");
             return false;
         }
 
@@ -111,7 +121,7 @@ public class LoginService : ILoginService
                 var appUserIdentity = scope.ServiceProvider.GetRequiredService<IApplicationUserIdentity>();
 
                 // Reload the application user identity
-                var userIdentity = appUserIdentity.ReloadAUI(activities[0], httpContext, keyGuid);
+                var userIdentity = appUserIdentity.ReloadAUI(activities[0], httpContext.Connection?.RemoteIpAddress, keyGuid);
 
                 // Setup cookie authentication
                 await SetupCookieAuthorizationAsync(httpContext, userIdentity);

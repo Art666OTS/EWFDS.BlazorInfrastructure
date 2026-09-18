@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Http;
+using System;
+using System.Threading.Tasks;
 
 namespace EWFDS.BlazorInfrastructure.Common.Authentication;
 
@@ -9,11 +10,11 @@ public interface ILoginService
 {
     /// <summary>
     /// Attempts to process a login using the provided authentication key.
+    /// Uses the ambient HttpContext (via IHttpContextAccessor) for cookie sign-in.
     /// </summary>
     /// <param name="keyGuid">The authentication key GUID</param>
-    /// <param name="httpContext">The HTTP context</param>
     /// <returns>True if login was successful, false otherwise</returns>
-    Task<bool> ProcessLoginAsync(Guid keyGuid, HttpContext httpContext);
+    Task<bool> ProcessLoginAsync(Guid keyGuid);
 
     /// <summary>
     /// Registers a pending login attempt.
