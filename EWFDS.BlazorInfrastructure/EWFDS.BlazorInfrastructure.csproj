@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -14,18 +14,19 @@
     <PackageReference Include="Azure.Identity" Version="1.21.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2" />
     <PackageReference Include="Csla" Version="10.1.0" />
-    <PackageReference Include="HtmlSanitizer" Version="9.2.995" />
+    <PackageReference Include="HtmlSanitizer" Version="9.2.1039" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.0" />
     <PackageReference Include="Telerik.UI.for.Blazor">
       <Version>15.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\EWFDSBL8\EWFDSBL8.csproj" />
-    <ProjectReference Include="..\EWFDS.Common\EWFDS.Common.csproj" />
+    <ProjectReference Include="..\..\EWFDS.Common\EWFDS.Common.csproj" />
+    <ProjectReference Include="..\EWFDS.Infrastructure\EWFDS.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

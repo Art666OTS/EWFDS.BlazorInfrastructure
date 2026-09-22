@@ -1,9 +1,9 @@
 using Csla;
-using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Identity;
 using EWFDSBL8BusinessLibrary;
 using System.Net;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization;
+namespace EWFDS.Infrastructure.Common.Authorization;
 
 /// <summary>
 /// Interface for validating activity tokens.

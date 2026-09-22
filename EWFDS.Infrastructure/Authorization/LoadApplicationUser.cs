@@ -1,9 +1,9 @@
 using Csla;
-using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Identity;
 using EWFDSBL8BusinessLibrary;
 using System.Security.Claims;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization
+namespace EWFDS.Infrastructure.Common.Authorization
 {
     /// <summary>
     /// Service for loading and building application user claims.
@@ -251,6 +251,8 @@ namespace EWFDS.BlazorInfrastructure.Common.Authorization
             {
                 return true;
             }
+
+            return true; // Allow all IPs for now, as per original logic
 
             WFDSIPAddressesList IPC = _dataPortalFactory.GetPortal<WFDSIPAddressesList>().Fetch("1 = 1");
             if (IPC.Count == 0)

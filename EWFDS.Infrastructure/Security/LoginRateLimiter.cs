@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-namespace EWFDS.BlazorInfrastructure.Common.Security
+namespace EWFDS.Infrastructure.Common.Security
 {
     /// <summary>
     /// Rate limiter for login attempts to prevent brute-force attacks.

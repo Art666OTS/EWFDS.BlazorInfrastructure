@@ -2,7 +2,7 @@ using Csla;
 using EWFDSBL8BusinessLibrary;
 using Microsoft.Extensions.Logging;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authentication;
+namespace EWFDS.Infrastructure.Common.Authentication;
 
 /// <summary>
 /// Default implementation of <see cref="IAccessControlValidationService"/> that reads the
@@ -26,7 +26,7 @@ public class AccessControlValidationService : IAccessControlValidationService
         // The access id must be a valid, non-empty GUID token.
         if (string.IsNullOrWhiteSpace(accessId) || !Guid.TryParse(accessId, out var token) || token == Guid.Empty)
         {
-            _logger.LogWarning("Access denied: missing or invalid X-Access-Id.");
+            _logger.LogWarning("Access denied: missing or invalid X-Access-Token.");
             return false;
         }
 

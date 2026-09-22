@@ -4,7 +4,7 @@ using BusinessLibrary;
 using Csla;
 using Csla.Rules;
 using EWFDS.Common.Email;
-using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Identity;
 using EWFDSBL8BusinessLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +16,7 @@ using System.Reflection;
 using System.Text;
 using WFDSOrdersAPI8.Data.Entity;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization
+namespace EWFDS.Infrastructure.Common.Authorization
 {
     /// <summary>
     /// Application user actions - authorization, validation, and company checks.

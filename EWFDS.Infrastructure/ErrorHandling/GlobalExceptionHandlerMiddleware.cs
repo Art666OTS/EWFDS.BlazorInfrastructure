@@ -4,7 +4,7 @@ using EWFDS.Common.ErrorHandling;
 using System.Net;
 using System.Text.Json;
 
-namespace EWFDS.BlazorInfrastructure.Common.ErrorHandling;
+namespace EWFDS.Infrastructure.Common.ErrorHandling;
 
 public class GlobalExceptionHandlerMiddleware
 {

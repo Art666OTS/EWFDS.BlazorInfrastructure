@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace EWFDS.BlazorInfrastructure.Common.FileSystem
+namespace EWFDS.Infrastructure.Common.FileSystem
 {
     /// <summary>
     /// Service for file operations including Base64 encoding for images and PDF documents

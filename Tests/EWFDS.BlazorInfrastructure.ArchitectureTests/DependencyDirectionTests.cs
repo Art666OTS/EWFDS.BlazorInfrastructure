@@ -1,5 +1,5 @@
 using System.Reflection;
-using EWFDS.BlazorInfrastructure.Common.ErrorHandling;
+using EWFDS.Infrastructure.Common.ErrorHandling;
 using Xunit;
 
 namespace EWFDS.BlazorInfrastructure.ArchitectureTests;

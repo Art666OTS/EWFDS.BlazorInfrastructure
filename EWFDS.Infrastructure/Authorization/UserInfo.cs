@@ -1,4 +1,4 @@
-namespace EWFDS.BlazorInfrastructure.Common.Authorization;
+namespace EWFDS.Infrastructure.Common.Authorization;
 
 /// <summary>
 /// User information for authentication state persistence.

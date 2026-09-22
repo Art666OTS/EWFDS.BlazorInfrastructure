@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using EWFDS.BlazorInfrastructure.Common.Authorization;
+using EWFDS.Infrastructure.Common.Authorization;
 using System.Threading.Tasks;
 
-namespace EWFDS.BlazorInfrastructure.Common.Hosting
+namespace EWFDS.Infrastructure.Common.Hosting
 {
     public static class SharedAppEndpointsExtensions
     {

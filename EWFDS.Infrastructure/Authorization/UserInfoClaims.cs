@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization;
+namespace EWFDS.Infrastructure.Common.Authorization;
 
 /// <summary>
 /// Claims transformation that adds default claims to authenticated users.

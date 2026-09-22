@@ -1,5 +1,6 @@
 using EWFDS.BlazorInfrastructure.Blazor.Authorization;
 using EWFDS.BlazorInfrastructure.Blazor.Circuits;
+using EWFDS.BlazorInfrastructure.Blazor.Identity;
 using EWFDS.BlazorInfrastructure.Blazor.Theming;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
@@ -64,6 +65,9 @@ namespace EWFDS.BlazorInfrastructure.Extensions
         {
             // Theming
             services.AddThemeService();
+
+            // Blazor identity navigation helper (depends on NavigationManager)
+            services.AddScoped<IdentityRedirectManager>();
 
             // Blazor authorization helper
             services.AddScoped<UserAuthorised>();

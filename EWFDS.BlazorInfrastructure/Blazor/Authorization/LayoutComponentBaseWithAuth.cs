@@ -1,5 +1,5 @@
-using EWFDS.BlazorInfrastructure.Common.Identity;
-using EWFDS.BlazorInfrastructure.Common.State;
+using EWFDS.Infrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.State;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 

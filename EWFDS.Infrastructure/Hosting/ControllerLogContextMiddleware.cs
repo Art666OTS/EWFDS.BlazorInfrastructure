@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Serilog.Context;
 
-namespace EWFDS.BlazorInfrastructure.Common.Hosting
+namespace EWFDS.Infrastructure.Common.Hosting
 {
     /// <summary>
     /// Pushes the routed controller name into Serilog's LogContext for the duration of the

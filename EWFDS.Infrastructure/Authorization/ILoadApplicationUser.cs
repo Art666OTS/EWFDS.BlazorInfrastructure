@@ -1,6 +1,6 @@
-using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Identity;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization
+namespace EWFDS.Infrastructure.Common.Authorization
 {
     /// <summary>
     /// Interface for loading and building application user claims.

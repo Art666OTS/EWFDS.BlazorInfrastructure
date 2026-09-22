@@ -1,7 +1,7 @@
 using EWFDSBL8BusinessLibrary;
 using System.Security.Claims;
 
-namespace EWFDS.BlazorInfrastructure.Common.Identity
+namespace EWFDS.Infrastructure.Common.Identity
 {
     /// <summary>
     /// Interface for application user identity information.

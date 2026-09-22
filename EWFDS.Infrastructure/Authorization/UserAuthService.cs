@@ -1,12 +1,12 @@
 using Csla;
-using EWFDS.BlazorInfrastructure.Common.Identity;
-using EWFDS.BlazorInfrastructure.Common.State;
+using EWFDS.Infrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.State;
 using EWFDSBL8BusinessLibrary;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization;
+namespace EWFDS.Infrastructure.Common.Authorization;
 
 /// <summary>
 /// Interface for user authentication operations.

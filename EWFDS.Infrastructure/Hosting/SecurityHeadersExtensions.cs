@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace EWFDS.BlazorInfrastructure.Common.Hosting
+namespace EWFDS.Infrastructure.Common.Hosting
 {
     public static class SecurityHeadersExtensions
     {

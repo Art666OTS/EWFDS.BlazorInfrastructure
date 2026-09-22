@@ -1,6 +1,6 @@
 using Csla;
 using Csla.Rules;
-using EWFDS.BlazorInfrastructure.Common.Authorization;
+using EWFDS.Infrastructure.Common.Authorization;
 using EWFDS.Common.Configuration;
 using EWFDSBL8BusinessLibrary;
 using EWFDSBL8DAL;
@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Security.Claims;
 using static EWFDSBL8BusinessLibrary.USERLEVELSInfo;
 
-namespace EWFDS.BlazorInfrastructure.Common.Identity
+namespace EWFDS.Infrastructure.Common.Identity
 {
     /// <summary>
     /// Application user identity implementation.
@@ -148,14 +148,17 @@ namespace EWFDS.BlazorInfrastructure.Common.Identity
                     }
                     else
                     {
-                        IsAuthenticated = false;
                         var brd = new List<string>();
                         foreach (BrokenRule br in ai.BrokenRulesCollection)
                         {
                             brd.Add(br.Description);
                         }
-                        message = string.Join(Environment.NewLine, brd.ToArray());
+                        LoginNotFound(string.Join(Environment.NewLine, brd.ToArray()));
                     }
+                }
+                else
+                {
+                    LoginNotFound(eMsg);
                 }
             }
             return this;

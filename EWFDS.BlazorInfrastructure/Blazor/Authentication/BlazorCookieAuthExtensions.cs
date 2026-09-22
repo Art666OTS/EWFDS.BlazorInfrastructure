@@ -1,5 +1,4 @@
 using System;
-using EWFDS.BlazorInfrastructure.Common.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

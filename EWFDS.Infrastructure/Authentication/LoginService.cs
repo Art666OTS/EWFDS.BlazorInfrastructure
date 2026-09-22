@@ -1,5 +1,5 @@
 using Csla;
-using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Identity;
 using EWFDSBL8BusinessLibrary;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authentication;
+namespace EWFDS.Infrastructure.Common.Authentication;
 
 /// <summary>
 /// Information about a pending login attempt.

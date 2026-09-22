@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authentication;
+namespace EWFDS.Infrastructure.Common.Authentication;
 
 /// <summary>
 /// Service interface for managing login authentication flow.

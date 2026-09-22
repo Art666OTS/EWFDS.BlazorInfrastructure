@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Security.Claims;
-using EWFDS.BlazorInfrastructure.Common.Authorization;
+using EWFDS.Infrastructure.Common.Authorization;
 
 namespace EWFDS.BlazorInfrastructure.Blazor.Authorization;
 

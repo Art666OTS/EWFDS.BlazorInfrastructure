@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace EWFDS.BlazorInfrastructure.Common.FileSystem
+namespace EWFDS.Infrastructure.Common.FileSystem
 {
     /// <summary>
     /// Service for resolving virtual directory paths to physical disk locations

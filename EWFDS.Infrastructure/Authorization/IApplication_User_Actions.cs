@@ -1,9 +1,9 @@
 using au.com.opttecsol;
-using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Identity;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization
+namespace EWFDS.Infrastructure.Common.Authorization
 {
     /// <summary>
     /// Interface for application user actions - authorization, validation, and company checks.

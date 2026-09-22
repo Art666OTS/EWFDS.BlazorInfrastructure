@@ -1,12 +1,12 @@
 using Csla;
-using EWFDS.BlazorInfrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Identity;
 using EWFDSBL8BusinessLibrary;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace EWFDS.BlazorInfrastructure.Common.Authorization;
+namespace EWFDS.Infrastructure.Common.Authorization;
 
 /// <summary>
 /// Interface for token-based authentication.

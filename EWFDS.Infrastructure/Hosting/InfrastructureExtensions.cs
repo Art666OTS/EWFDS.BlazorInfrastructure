@@ -16,11 +16,11 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc;
 using EWFDS.Common.FileStorage;
 using EWFDS.Common.Infrastructure;
-using EWFDS.BlazorInfrastructure.Common.FileSystem;
+using EWFDS.Infrastructure.Common.FileSystem;
 using Microsoft.AspNetCore.SignalR;
 using System.Reflection;
 
-namespace EWFDS.BlazorInfrastructure.Common.Hosting
+namespace EWFDS.Infrastructure.Common.Hosting
 {
     public static class InfrastructureExtensions
     {
@@ -164,9 +164,12 @@ namespace EWFDS.BlazorInfrastructure.Common.Hosting
 
             Log.Logger = loggerConfig.CreateLogger();
 
-            // Replace default logging providers with Serilog
+            // Replace default logging providers with Serilog and register Serilog's hosting
+            // services (ILogger plus IDiagnosticContext/DiagnosticContext). Using Services.AddSerilog
+            // (rather than Logging.AddSerilog) ensures DiagnosticContext is available in DI, which is
+            // required by the UseSerilogRequestLogging middleware.
             builder.Logging.ClearProviders();
-            builder.Logging.AddSerilog(dispose: true);
+            builder.Services.AddSerilog(Log.Logger, dispose: true);
 
             return logsDirPath;
         }

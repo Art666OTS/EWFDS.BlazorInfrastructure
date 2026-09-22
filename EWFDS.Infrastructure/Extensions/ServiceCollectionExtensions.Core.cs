@@ -1,9 +1,9 @@
 using BusinessLibrary;
-using EWFDS.BlazorInfrastructure.Common.Authentication;
-using EWFDS.BlazorInfrastructure.Common.Authorization;
-using EWFDS.BlazorInfrastructure.Common.FileSystem;
-using EWFDS.BlazorInfrastructure.Common.Identity;
-using EWFDS.BlazorInfrastructure.Common.State;
+using EWFDS.Infrastructure.Common.Authentication;
+using EWFDS.Infrastructure.Common.Authorization;
+using EWFDS.Infrastructure.Common.FileSystem;
+using EWFDS.Infrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.State;
 using EWFDS.Common.Email;
 using EWFDS.Common.ErrorHandling;
 using EWFDS.Common.FileStorage;

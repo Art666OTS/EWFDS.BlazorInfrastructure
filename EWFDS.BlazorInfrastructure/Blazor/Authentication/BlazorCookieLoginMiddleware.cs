@@ -1,7 +1,7 @@
+using EWFDS.Infrastructure.Common.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using EWFDS.BlazorInfrastructure.Common.Authentication;
 
 namespace EWFDS.BlazorInfrastructure.Blazor.Authentication;
 
@@ -57,7 +57,7 @@ public class BlazorCookieLoginMiddleware
 
             // Resolve ILoginService only when actually needed
             var loginService = context.RequestServices.GetRequiredService<ILoginService>();
-            var loginSuccessful = await loginService.ProcessLoginAsync(keyGuid, context);
+            var loginSuccessful = await loginService.ProcessLoginAsync(keyGuid);
 
             if (loginSuccessful)
             {
