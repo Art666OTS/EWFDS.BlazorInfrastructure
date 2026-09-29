@@ -23,6 +23,7 @@
     <PackageReference Include="Telerik.UI.for.Blazor">
       <Version>15.0.1</Version>
     </PackageReference>
+    <PackageReference Include="Telerik.Reporting.Services.AspNetCore" Version="20.2.26.812" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\EWFDSBL8\EWFDSBL8.csproj" />

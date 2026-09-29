@@ -1,6 +1,7 @@
 using Csla;
 using EWFDS.Infrastructure.Common.Identity;
 using EWFDSBL8BusinessLibrary;
+using Microsoft.Extensions.Caching.Memory;
 using System.Net;
 
 namespace EWFDS.Infrastructure.Common.Authorization;
@@ -19,17 +20,35 @@ public interface IActivityTokenValidator
 public class ActivityTokenValidator : IActivityTokenValidator
 {
     private readonly IDataPortalFactory _dataPortalFactory;
+    private readonly IMemoryCache _consumedTokenCache;
     private const int TOKEN_EXPIRY_HOURS = 4;
 
-    public ActivityTokenValidator(IDataPortalFactory dataPortalFactory)
+    // Prefix for cache entries that mark a transfer token as already redeemed (single-use).
+    private const string ConsumedTokenCacheKeyPrefix = "ConsumedTransferToken_";
+
+    public ActivityTokenValidator(IDataPortalFactory dataPortalFactory, IMemoryCache consumedTokenCache)
     {
         _dataPortalFactory = dataPortalFactory;
+        _consumedTokenCache = consumedTokenCache;
     }
 
     public async Task<TokenValidationResult> ValidateTokenAsync(Guid loginToken, IPAddress? ipAddress)
     {
         try
         {
+            // Single-use enforcement: reject a token that has already been redeemed on this app.
+            // This prevents the same transfer link (e.g. left in browser history or logs) from
+            // being replayed to log in again after it has been used once.
+            string consumedTokenKey = ConsumedTokenCacheKeyPrefix + loginToken;
+            if (_consumedTokenCache.TryGetValue(consumedTokenKey, out _))
+            {
+                return new TokenValidationResult
+                {
+                    IsValid = false,
+                    ErrorMessage = "Token already used: this single-use login link has already been redeemed"
+                };
+            }
+
             // Fetch ACTIVITY records with the specified LoginKey
             string criteria = $"LoginKey = '{loginToken}'";
             ACTIVITYList activityList = await Task.Run(() =>
@@ -77,6 +96,14 @@ public class ActivityTokenValidator : IActivityTokenValidator
                     ErrorMessage = "Token is Logged Out"
                 };
             }
+
+            // Single-use: mark this token as redeemed so the same link cannot be replayed.
+            // The entry is kept for the token's validity window so it self-evicts once the
+            // token would have expired anyway.
+            _consumedTokenCache.Set(
+                consumedTokenKey,
+                true,
+                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(TOKEN_EXPIRY_HOURS)));
 
             return new TokenValidationResult
             {
