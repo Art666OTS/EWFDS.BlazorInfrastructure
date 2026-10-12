@@ -11,7 +11,7 @@ namespace EWFDS.BlazorInfrastructure.Blazor.Theming
     public static class TelerikVersionProvider
     {
         /// <summary>
-        /// The Telerik version in "Major.Minor.Build" form (e.g. "15.0.0"),
+        /// The Telerik version in "Major.Minor.Build" form (e.g. "15.0.1"),
         /// matching the CDN path segment used by blazor.cdn.telerik.com.
         /// </summary>
         public static string Version { get; } = ResolveVersion();
@@ -25,7 +25,7 @@ namespace EWFDS.BlazorInfrastructure.Blazor.Theming
                 .Version;
 
             return version is null
-                ? "15.0.0"
+                ? "15.0.1"
                 : $"{version.Major}.{version.Minor}.{version.Build}";
         }
     }

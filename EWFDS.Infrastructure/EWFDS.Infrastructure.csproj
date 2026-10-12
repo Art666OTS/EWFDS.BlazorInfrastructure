@@ -16,7 +16,7 @@
 
   <ItemGroup>
 	<PackageReference Include="Csla" Version="10.1.0" />
-	<PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.0" />
+	<PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
 	<PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
   </ItemGroup>
 

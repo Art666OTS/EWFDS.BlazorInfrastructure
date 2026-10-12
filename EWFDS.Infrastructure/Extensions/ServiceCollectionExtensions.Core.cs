@@ -3,6 +3,7 @@ using EWFDS.Infrastructure.Common.Authentication;
 using EWFDS.Infrastructure.Common.Authorization;
 using EWFDS.Infrastructure.Common.FileSystem;
 using EWFDS.Infrastructure.Common.Identity;
+using EWFDS.Infrastructure.Common.Security;
 using EWFDS.Infrastructure.Common.State;
 using EWFDS.Common.Email;
 using EWFDS.Common.ErrorHandling;
@@ -170,6 +171,11 @@ namespace EWFDS.Infrastructure.Extensions
             // Phase 4: File Storage (Azure Blob Storage)
             services.AddAzureBlobStorage(configuration);
             services.AddVirtualDirectoryService();
+
+            // Phase 5: App user actions, image service and login rate limiting (moved from per-app RegisterSystemObjects)
+            services.AddTransient<IApplication_User_Actions, Application_User_Actions>();
+            services.AddTransient<IImageService, ImageService>();
+            services.AddSingleton<ILoginRateLimiter, LoginRateLimiter>();
 
             return services;
         }

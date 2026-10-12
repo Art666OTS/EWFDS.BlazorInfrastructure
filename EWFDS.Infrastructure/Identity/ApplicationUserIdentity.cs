@@ -429,5 +429,22 @@ namespace EWFDS.Infrastructure.Common.Identity
         }
 
         #endregion Associated Company Methods
+
+        #region Persistent Cart
+
+        /// <summary>
+        /// Gets the persistent cart CID for this identity, used as the CID key in the
+        /// persistent cart tables. For customer users it is "{CSOCustomerID}_{CustomerGUID}";
+        /// otherwise "{Key}_{CustomerGUID}".
+        /// </summary>
+        /// <returns>The persistent cart CID string.</returns>
+        public string GetPersistCartCID()
+        {
+            return IsUser
+                ? $"{CSOCustomerID}_{CustomerGUID}"
+                : $"{Key}_{CustomerGUID}";
+        }
+
+        #endregion Persistent Cart
     }
 }

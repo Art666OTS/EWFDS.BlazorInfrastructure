@@ -280,5 +280,13 @@ namespace EWFDS.Infrastructure.Common.Identity
         /// <param name="claimType">The claim type.</param>
         /// <returns>The claim value.</returns>
         object GetClaimVaLue(string claimType);
+
+        /// <summary>
+        /// Gets the persistent cart CID for this identity, used as the CID key in the
+        /// persistent cart tables. For customer users it is "{CSOCustomerID}_{CustomerGUID}";
+        /// otherwise "{Key}_{CustomerGUID}".
+        /// </summary>
+        /// <returns>The persistent cart CID string.</returns>
+        string GetPersistCartCID();
     }
 }
