@@ -30,4 +30,7 @@
     <ProjectReference Include="..\..\EWFDS.Common\EWFDS.Common.csproj" />
     <ProjectReference Include="..\EWFDS.Infrastructure\EWFDS.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Blazor\Components\Shared\Models\" />
+  </ItemGroup>
 </Project>
