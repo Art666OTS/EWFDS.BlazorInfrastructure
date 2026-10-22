@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.21.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.30.1" />
     <PackageReference Include="Csla" Version="10.1.0" />
     <PackageReference Include="HtmlSanitizer" Version="9.2.1039" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
